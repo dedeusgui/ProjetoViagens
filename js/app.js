@@ -250,55 +250,203 @@ if (searchCountryInput) {
   });
 }
 
-// Configura busca global no header (redireciona para places.html com query)
-const headerSearchInput =
-  document.getElementById("search-input") ||
-  document.getElementById("global-search") ||
-  document.querySelector("header input") ||
-  document.querySelector("input[data-global-search]");
-const headerSearchButton =
-  document.getElementById("search-btn") ||
-  document.getElementById("global-search-btn") ||
-  document.querySelector("header button") ||
-  document.querySelector("button[data-global-search-btn]");
-
-if (headerSearchInput) {
-  headerSearchInput.addEventListener("keypress", (event) => {
-    if (event.key === "Enter") {
-      event.preventDefault();
-      const value = headerSearchInput.value.trim();
-      if (!value) return;
-      // redireciona para places.html com o termo de busca na query
-      window.location.href = `places.html?search=${encodeURIComponent(value)}`;
-    }
-  });
-}
-
-if (headerSearchButton) {
-  headerSearchButton.addEventListener("click", (event) => {
-    event.preventDefault();
-    const value = headerSearchInput ? headerSearchInput.value.trim() : "";
-    if (!value) return;
-    window.location.href = `places.html?search=${encodeURIComponent(value)}`;
-  });
-}
-
 // Chama a função principal quando a página estiver totalmente carregada
-document.addEventListener("DOMContentLoaded", async () => {
+document.addEventListener("DOMContentLoaded", () => {
   if (window.location.pathname.includes("places.html")) {
-    // Se houver um parâmetro de busca na URL, preenche o campo local para o usuário ver
-    const params = new URLSearchParams(window.location.search);
-    const q = params.get("search");
-    if (q && typeof searchCountryInput !== "undefined" && searchCountryInput) {
-      searchCountryInput.value = q;
-      // aguarda o carregamento dos países e então executa a busca automática
-      await getAllCountries();
-      // chama a busca para filtrar allCountriesData já carregado
-      searchCountries();
+    getAllCountries();
+  }
+});
+
+// ----------------------------------------------------------------------
+// Lógica para a página de Detalhes do País
+// ----------------------------------------------------------------------
+
+/**
+ * Pega o nome do país da URL (query parameter).
+ * @returns {string} - O nome do país.
+ */
+function getCountryNameFromUrl() {
+  const params = new URLSearchParams(window.location.search);
+  return params.get("name");
+}
+
+/**
+ * Busca os dados de um país específico por nome na API Rest Countries.
+ * @param {string} countryName - O nome do país.
+ * @returns {Promise<object>} - Os dados do país.
+ */
+async function getCountryData(countryName) {
+  const url = `${restCountriesLink}/name/${countryName}?fields=name,capital,population,languages,currencies,latlng,timezones,flags,borders`;
+  try {
+    const data = await fetchAPI(url);
+    // A API de nome retorna um array, então pegamos o primeiro item
+    return data[0];
+  } catch (error) {
+    console.error("Erro ao buscar dados do país:", error);
+    return null;
+  }
+}
+
+/**
+ * Busca os dados de clima de um país usando as coordenadas.
+ * @param {number} lat - Latitude do país.
+ * @param {number} lon - Longitude do país.
+ * @returns {Promise<object>} - Os dados de clima.
+ */
+async function getWeather(lat, lon) {
+  const url = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&units=metric&lang=pt_br&appid=${weatherKey}`;
+  try {
+    return await fetchAPI(url);
+  } catch (error) {
+    console.error("Erro ao buscar dados do clima:", error);
+    return null;
+  }
+}
+
+/**
+ * Busca uma imagem de fundo para o país na API Unsplash.
+ * @param {string} query - O termo de busca (nome do país).
+ * @returns {Promise<string>} - A URL da imagem.
+ */
+async function getCountryImage(query) {
+  const url = `https://api.unsplash.com/search/photos?query=${query}&per_page=1&client_id=${unplashKey}`;
+  try {
+    const data = await fetchAPI(url);
+    return data.results[0].urls.full;
+  } catch (error) {
+    console.error("Erro ao buscar imagem:", error);
+    // Retorna uma imagem de fallback em caso de erro
+    return "https://via.placeholder.com/1920x1080?text=NoMap";
+  }
+}
+
+/**
+ * Função principal para a página de detalhes do país.
+ */
+async function displayCountryDetails() {
+  const container = document.getElementById("country-details-container");
+  const countryName = getCountryNameFromUrl();
+
+  if (!countryName || !container) {
+    return;
+  }
+
+  // Exibir mensagem de carregamento inicial
+  container.innerHTML = `
+        <div class="d-flex flex-column align-items-center justify-content-center w-100 p-5">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Carregando...</span>
+            </div>
+            <p class="mt-2 text-muted">Carregando detalhes do país...</p>
+        </div>
+    `;
+
+  try {
+    const countryData = await getCountryData(countryName);
+
+    if (!countryData) {
+      container.innerHTML = `<div class="alert alert-danger w-100">País não encontrado.</div>`;
       return;
     }
 
-    // Sem query de busca, carrega normalmente
-    await getAllCountries();
+    const [weatherData, imageUrl] = await Promise.all([
+      getWeather(countryData.latlng[0], countryData.latlng[1]),
+      getCountryImage(countryName),
+    ]);
+
+    const population = new Intl.NumberFormat("pt-BR").format(
+      countryData.population
+    );
+    const currency = getComplexData(countryData.currencies, "currency");
+    const language = getComplexData(countryData.languages, "language");
+    const weather = weatherData
+      ? `${weatherData.main.temp}°C, ${weatherData.weather[0].description}`
+      : "N/A";
+
+    // Cria o HTML final da página de detalhes
+    const detailsHTML = `
+            <div class="row">
+                <div class="col-12 text-center mb-4">
+                    <h1 class="display-3 fw-bold">${
+                      countryData.name.common
+                    }</h1>
+                    <p class="lead">${countryData.name.official}</p>
+                </div>
+                <div class="col-lg-6 mb-4">
+                    <div class="card h-100 shadow-sm">
+                        <img src="${
+                          countryData.flags.svg
+                        }" class="card-img-top" alt="Bandeira do ${
+      countryData.name.common
+    }">
+                        <div class="card-body">
+                            <h5>Informações do País</h5>
+                            <ul class="list-unstyled">
+                                <li><strong>Capital:</strong> ${
+                                  countryData.capital
+                                    ? countryData.capital[0]
+                                    : "N/A"
+                                }</li>
+                                <li><strong>População:</strong> ${population}</li>
+                                <li><strong>Idioma:</strong> ${language}</li>
+                                <li><strong>Moeda:</strong> ${currency}</li>
+                                <li><strong>Fuso Horário:</strong> ${
+                                  countryData.timezones[0]
+                                }</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6 mb-4">
+                    <div class="card h-100 shadow-sm">
+                        <div class="card-body d-flex flex-column justify-content-between">
+                            <div>
+                                <h5>Clima</h5>
+                                <p>${weather}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12 mt-4">
+                    <img src="${imageUrl}" class="img-fluid rounded shadow" alt="Imagem de ${
+      countryData.name.common
+    }">
+                </div>
+            </div>
+        `;
+    container.innerHTML = detailsHTML;
+  } catch (error) {
+    console.error("Falha ao carregar os detalhes:", error);
+    container.innerHTML = `<div class="alert alert-danger w-100">Ocorreu um erro ao carregar os detalhes do país.</div>`;
+  }
+}
+
+// ----------------------------------------------------------------------
+// Inicialização
+// ----------------------------------------------------------------------
+
+document.addEventListener("DOMContentLoaded", () => {
+  // Adiciona esta verificação
+  if (window.location.pathname.includes("country.html")) {
+    displayCountryDetails();
   }
 });
+
+// A função de busca global que será chamada em todas as páginas
+function globalSearch() {
+  const searchTerm = searchCountryInput.value.trim();
+
+  if (searchTerm === "") {
+    return; // Não faz nada se a busca estiver vazia
+  }
+
+  if (window.location.pathname.includes("places.html")) {
+    // Se já estiver na página de países, chama a função de busca local
+    searchCountries();
+  } else {
+    // Se estiver em outra página, redireciona para places.html com o termo de busca na URL
+    window.location.href = `places.html?search=${encodeURIComponent(
+      searchTerm
+    )}`;
+  }
+}
