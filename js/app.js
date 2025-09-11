@@ -250,9 +250,55 @@ if (searchCountryInput) {
   });
 }
 
+// Configura busca global no header (redireciona para places.html com query)
+const headerSearchInput =
+  document.getElementById("search-input") ||
+  document.getElementById("global-search") ||
+  document.querySelector("header input") ||
+  document.querySelector("input[data-global-search]");
+const headerSearchButton =
+  document.getElementById("search-btn") ||
+  document.getElementById("global-search-btn") ||
+  document.querySelector("header button") ||
+  document.querySelector("button[data-global-search-btn]");
+
+if (headerSearchInput) {
+  headerSearchInput.addEventListener("keypress", (event) => {
+    if (event.key === "Enter") {
+      event.preventDefault();
+      const value = headerSearchInput.value.trim();
+      if (!value) return;
+      // redireciona para places.html com o termo de busca na query
+      window.location.href = `places.html?search=${encodeURIComponent(value)}`;
+    }
+  });
+}
+
+if (headerSearchButton) {
+  headerSearchButton.addEventListener("click", (event) => {
+    event.preventDefault();
+    const value = headerSearchInput ? headerSearchInput.value.trim() : "";
+    if (!value) return;
+    window.location.href = `places.html?search=${encodeURIComponent(value)}`;
+  });
+}
+
 // Chama a função principal quando a página estiver totalmente carregada
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", async () => {
   if (window.location.pathname.includes("places.html")) {
-    getAllCountries();
+    // Se houver um parâmetro de busca na URL, preenche o campo local para o usuário ver
+    const params = new URLSearchParams(window.location.search);
+    const q = params.get("search");
+    if (q && typeof searchCountryInput !== "undefined" && searchCountryInput) {
+      searchCountryInput.value = q;
+      // aguarda o carregamento dos países e então executa a busca automática
+      await getAllCountries();
+      // chama a busca para filtrar allCountriesData já carregado
+      searchCountries();
+      return;
+    }
+
+    // Sem query de busca, carrega normalmente
+    await getAllCountries();
   }
 });
