@@ -399,3 +399,91 @@
 .featured-country-card:nth-child(6) {
   animation-delay: 0.6s;
 }
+
+/* Estilos customizados para a página "Quem Somos" */
+.about-story {
+  background: linear-gradient(
+    135deg,
+    rgba(13, 110, 253, 0.03) 0%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  border-radius: var(--border-radius);
+  padding: 3rem 0;
+}
+
+.story-image {
+  transition: var(--transition);
+}
+
+.story-image:hover {
+  transform: translateY(-5px);
+}
+
+.philosophy-card {
+  transition: var(--transition);
+  border-radius: var(--border-radius);
+}
+
+.philosophy-card:hover {
+  transform: translateY(-5px);
+  background-color: white !important;
+  box-shadow: var(--shadow);
+}
+
+.team-member-card {
+  transition: var(--transition);
+}
+
+.team-member-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 12px 25px rgba(0, 0, 0, 0.15) !important;
+}
+
+.icon-wrapper {
+  transition: var(--transition);
+}
+
+.philosophy-card:hover .icon-wrapper {
+  transform: scale(1.1);
+}
+
+.team-avatar {
+  transition: var(--transition);
+}
+
+.team-member-card:hover .team-avatar {
+  transform: scale(1.05);
+}
+
+.social-links a {
+  transition: var(--transition);
+  font-size: 1.2rem;
+}
+
+.social-links a:hover {
+  transform: translateY(-3px);
+  opacity: 0.8;
+}
+
+.cta-section {
+  transition: var(--transition);
+}
+
+.cta-section:hover {
+  background-color: rgba(13, 110, 253, 0.15) !important;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+  .about-story {
+    padding: 2rem 0;
+  }
+
+  .story-image {
+    margin-bottom: 2rem;
+  }
+
+  .team-member-card {
+    margin-bottom: 1rem;
+  }
+}
