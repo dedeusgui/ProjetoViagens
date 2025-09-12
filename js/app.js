@@ -15,6 +15,8 @@ const collator = new Intl.Collator("pt-BR", {
 const countriesGrid = document.getElementById("countries-grid");
 const continentFilter = document.getElementById("continent-filter");
 const searchCountryInput = document.getElementById("search-country-input");
+const globalSearchInput = document.getElementById("global-search-input");
+const searchButton = document.getElementById("search-button");
 
 /**
  * Função utilitária para 'debounce'.
@@ -202,23 +204,62 @@ function displayCountriesGrid(countries) {
 
 /**
  * Função que filtra e exibe os países com base no texto de busca.
+ * @param {string} searchTerm - Termo de busca opcional
  */
-async function searchCountries() {
-  if (!searchCountryInput) return;
-
-  // Se dados não carregados, pede a API (getAllCountries já mostra spinner por si só)
+/**
+ * Função que filtra e exibe os países com base no texto de busca.
+ * @param {string} searchTerm - Termo de busca opcional
+ */
+async function searchCountries(searchTerm = null) {
+  // Se dados não carregados, carrega primeiro
   if (allCountriesData.length === 0) {
     await getAllCountries();
-    return; // getAllCountries chama displayCountriesGrid quando terminar
+    // Se após carregar ainda não há dados, sai
+    if (allCountriesData.length === 0) {
+      return;
+    }
   }
 
-  const formatedSearch = searchCountryInput.value.toLowerCase().trim();
-  // filtro rápido e exibição
+  // Pega o elemento do título uma vez
+  const countriesTitle = document.getElementById("countries-title");
+
+  // Usa o termo passado como parâmetro ou pega do input local
+  const formatedSearch = (
+    searchTerm || (searchCountryInput ? searchCountryInput.value : "")
+  )
+    .toLowerCase()
+    .trim();
+
+  // Se não há termo de busca, limpa o título e mostra todos os países
+  if (formatedSearch === "") {
+    if (countriesTitle) {
+      countriesTitle.textContent = ""; // Limpa o título aqui
+    }
+    displayCountriesGrid(allCountriesData);
+    return;
+  }
+
+  // Se chegou aqui, é porque há um termo de busca. Prossegue com o filtro.
   const filteredCountries = allCountriesData.filter((country) =>
     country.name.common.toLowerCase().includes(formatedSearch)
   );
 
-  // Mostra os resultados (ou "nenhum encontrado")
+  // Atualiza o título com o número de resultados
+  if (countriesTitle) {
+    if (filteredCountries.length === 0) {
+      countriesTitle.textContent = `Nenhum país encontrado para "${
+        searchTerm || formatedSearch
+      }"`;
+    } else {
+      countriesTitle.textContent = `${filteredCountries.length} país${
+        filteredCountries.length !== 1 ? "es" : ""
+      } encontrado${filteredCountries.length !== 1 ? "s" : ""} para "${
+        searchTerm || formatedSearch
+      }"`;
+    }
+  }
+
+  // Mostra os resultados filtrados
   displayCountriesGrid(filteredCountries);
 }
 
@@ -226,6 +267,12 @@ async function searchCountries() {
 if (continentFilter) {
   continentFilter.addEventListener("change", () => {
     const selectedContinent = continentFilter.value;
+    // Limpa o título quando muda o filtro
+    const countriesTitle = document.getElementById("countries-title");
+    if (countriesTitle) {
+      countriesTitle.textContent = "";
+    }
+
     if (selectedContinent === "Todos") {
       getAllCountries();
     } else {
@@ -234,9 +281,9 @@ if (continentFilter) {
   });
 }
 
-// Adiciona o ouvinte de evento para a busca de país
+// Adiciona o ouvinte de evento para a busca local (página places.html)
 if (searchCountryInput) {
-  const debouncedSearch = debounce(searchCountries, 180);
+  const debouncedSearch = debounce(() => searchCountries(), 300);
 
   // Lógica para executar a busca em tempo real (evento 'input')
   searchCountryInput.addEventListener("input", debouncedSearch);
@@ -257,6 +304,44 @@ if (searchCountryInput) {
 function getCountryNameFromUrl() {
   const params = new URLSearchParams(window.location.search);
   return params.get("name");
+}
+
+/**
+ * Pega o termo de busca da URL (query parameter).
+ * @returns {string} - O termo de busca ou string vazia se não existir.
+ */
+function getSearchTermFromUrl() {
+  const params = new URLSearchParams(window.location.search);
+  return params.get("search") || "";
+}
+
+/**
+ * Função de busca global que redireciona para a página de resultados.
+ */
+function globalSearch() {
+  // Pega o valor do input global do header
+  const searchTerm = globalSearchInput ? globalSearchInput.value.trim() : "";
+
+  // Se a busca estiver vazia, não faz nada
+  if (searchTerm === "") {
+    return;
+  }
+
+  // Redireciona para places.html com o termo de busca na URL
+  window.location.href = `places.html?search=${encodeURIComponent(searchTerm)}`;
+}
+
+// Lógica para executar a busca global quando o botão é clicado
+if (searchButton && globalSearchInput) {
+  searchButton.addEventListener("click", globalSearch);
+
+  // Lógica para executar a busca global quando a tecla Enter é pressionada
+  globalSearchInput.addEventListener("keypress", (event) => {
+    if (event.key === "Enter") {
+      event.preventDefault(); // Evita o comportamento padrão
+      globalSearch();
+    }
+  });
 }
 
 /**
@@ -414,63 +499,6 @@ async function displayCountryDetails() {
 // Inicialização
 // ----------------------------------------------------------------------
 
-// E ajuste o primeiro para incluir ambas as verificações:
-document.addEventListener("DOMContentLoaded", () => {
-  if (window.location.pathname.includes("places.html")) {
-    getAllCountries();
-  }
-  if (window.location.pathname.includes("country.html")) {
-    displayCountryDetails();
-  }
-});
-
-const searchButton = document.getElementById("search-button");
-// Seleciona o campo de busca (o que está no header)
-const globalSearchInput = document.getElementById("search-country-input");
-
-/**
- * Pega o nome do país da URL (query parameter).
- * @returns {string} - O nome do país ou string vazia se não existir.
- */
-function getSearchTermFromUrl() {
-  const params = new URLSearchParams(window.location.search);
-  return params.get("search") || "";
-}
-
-/**
- * Função de busca global que redireciona para a página de resultados.
- */
-function globalSearch() {
-  // Pega o valor do input global do header
-  const searchTerm = globalSearchInput.value.trim();
-
-  // Se a busca estiver vazia, não faz nada
-  if (searchTerm === "") {
-    return;
-  }
-
-  // Redireciona para places.html com o termo de busca na URL
-  window.location.href = `places.html?search=${encodeURIComponent(searchTerm)}`;
-}
-
-// Lógica para executar a busca global quando o botão é clicado
-if (searchButton && globalSearchInput) {
-  searchButton.addEventListener("click", globalSearch);
-
-  // Lógica para executar a busca global quando a tecla Enter é pressionada
-  globalSearchInput.addEventListener("keypress", (event) => {
-    if (event.key === "Enter") {
-      event.preventDefault(); // Evita o comportamento padrão (ex: submissão de formulário)
-      globalSearch();
-    }
-  });
-}
-
-// ... (o restante do código)
-// app.js
-
-// ...
-
 document.addEventListener("DOMContentLoaded", () => {
   if (window.location.pathname.includes("places.html")) {
     // Pega o termo de busca da URL
@@ -478,16 +506,18 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Se houver um termo de busca na URL, preenche o input e executa a busca
     if (searchTerm) {
-      searchCountryInput.value = decodeURIComponent(searchTerm);
-      searchCountries();
+      if (searchCountryInput) {
+        searchCountryInput.value = decodeURIComponent(searchTerm);
+      }
+      // Executa a busca com o termo da URL
+      searchCountries(decodeURIComponent(searchTerm));
     } else {
       // Se não houver, carrega todos os países normalmente
       getAllCountries();
     }
   }
+
   if (window.location.pathname.includes("country.html")) {
     displayCountryDetails();
   }
 });
-
-// ...
