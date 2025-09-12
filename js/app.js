@@ -61,25 +61,39 @@ async function fetchAPI(url) {
  * @returns {string} - Retorna o nome da moeda/idioma ou 'N/A'.
  */
 function getComplexData(obj, type) {
-  if (!obj) {
+  if (!obj || typeof obj !== "object") {
     return "N/A";
   }
+
   try {
     const values = Object.values(obj);
     if (values && values.length > 0) {
       if (type === "currency") {
-        return values[0].name;
+        // Tenta pegar o nome da moeda de diferentes formas
+        const firstCurrency = values[0];
+        if (firstCurrency && firstCurrency.name) {
+          return firstCurrency.name;
+        } else if (firstCurrency && typeof firstCurrency === "string") {
+          return firstCurrency;
+        }
+        return "N/A";
       } else if (type === "language") {
-        return values[0];
+        // Para idiomas, pega o primeiro valor
+        const firstLanguage = values[0];
+        if (typeof firstLanguage === "string") {
+          return firstLanguage;
+        } else if (firstLanguage && firstLanguage.name) {
+          return firstLanguage.name;
+        }
+        return "N/A";
       }
     }
     return "N/A";
   } catch (e) {
-    console.error(`Erro ao obter dados de ${type}:`, e);
+    console.warn(`Erro ao processar dados de ${type}:`, e);
     return "N/A";
   }
 }
-
 /**
  * Ordena um array de países in-place usando o collator global.
  * @param {Array} array - array de países (modificado in-place).
@@ -160,11 +174,15 @@ function displayCountriesGrid(countries) {
   countriesGrid.innerHTML = "";
 
   if (!countries || countries.length === 0) {
-    countriesGrid.innerHTML = `<div class="alert alert-info w-100">Nenhum país encontrado.</div>`;
+    countriesGrid.innerHTML = `
+      <div class="col-12">
+        <div class="alert alert-info text-center" role="alert">
+          <i class="fas fa-search me-2"></i>Nenhum país encontrado.
+        </div>
+      </div>`;
     return;
   }
 
-  // Assumimos que o array recebido já está na ordem desejada (ordenado in-place quando apropriado)
   const html = countries
     .map((country) => {
       const population = new Intl.NumberFormat("pt-BR").format(
@@ -172,28 +190,59 @@ function displayCountriesGrid(countries) {
       );
       const currency = getComplexData(country.currencies, "currency");
       const language = getComplexData(country.languages, "language");
+      const continent = country.continents ? country.continents[0] : "N/A";
+      const capital = country.capital ? country.capital[0] : "N/A";
 
       return `
-      <div class="col">
-          <div class="card h-100 shadow-sm">
-              <img src="${
-                country.flags.svg
-              }" class="card-img-top" alt="Bandeira de ${country.name.common}">
-              <div class="card-body d-flex flex-column">
-                  <h5 class="card-title fw-bold">${country.name.common}</h5>
-                  <p class="card-text text-muted mb-auto">
-                      Capital: ${
-                        country.capital ? country.capital[0] : "N/A"
-                      } <br>
-                      População: ${population}
-                  </p>
-                  <p>Moeda: ${currency}</p>
-                  <p>Idioma: ${language}</p>
-                  <a href="country.html?name=${
-                    country.name.common
-                  }" class="btn btn-primary mt-3">Ver detalhes</a>
-              </div>
+      <div class="col-lg-4 col-md-6 col-12 mb-4">
+        <div class="card country-card h-100 shadow-sm border-0 rounded-3 overflow-hidden">
+          <div class="position-relative overflow-hidden" style="height: 200px;">
+            <img src="${country.flags.svg}" 
+                 class="card-img-top country-flag-img" 
+                 alt="Bandeira de ${country.name.common}"
+                 loading="lazy">
+            <div class="country-overlay d-flex align-items-end p-3">
+              <span class="badge bg-primary rounded-pill">${continent}</span>
+            </div>
           </div>
+          
+          <div class="card-body d-flex flex-column">
+            <div class="mb-3">
+              <h5 class="card-title fw-bold text-primary mb-1">${
+                country.name.common
+              }</h5>
+              <p class="card-text text-muted small mb-0">
+                <i class="fas fa-landmark me-1"></i> ${capital}
+              </p>
+            </div>
+            
+            <div class="country-info-grid mb-3">
+              <div class="info-item">
+                <small class="text-muted">População</small>
+                <p class="mb-0 fw-medium">${population}</p>
+              </div>
+              <div class="info-item">
+                <small class="text-muted">Moeda</small>
+                <p class="mb-0 fw-medium text-truncate" title="${currency}">${currency}</p>
+              </div>
+            </div>
+            
+            <div class="mt-auto">
+              <div class="d-flex justify-content-between align-items-center mb-3">
+                <small class="text-muted">
+                  <i class="fas fa-language me-1"></i> ${language}
+                </small>
+              </div>
+              
+              <a href="country.html?name=${encodeURIComponent(
+                country.name.common
+              )}" 
+                 class="btn btn-outline-primary w-100 rounded-pill fw-medium">
+                <i class="fas fa-map-marker-alt me-2"></i>Explorar
+              </a>
+            </div>
+          </div>
+        </div>
       </div>
     `;
     })
@@ -350,10 +399,12 @@ if (searchButton && globalSearchInput) {
  * @returns {Promise<object>} - Os dados do país.
  */
 async function getCountryData(countryName) {
-  const url = `${restCountriesLink}/name/${countryName}?fields=name,capital,population,languages,currencies,latlng,timezones,flags,borders`;
+  // URL corrigida - removendo espaços extras
+  const url = `https://restcountries.com/v3.1/name/${countryName}?fields=name,capital,population,languages,currencies,latlng,timezones,flags,borders,region,subregion,continents`;
+
   try {
     const data = await fetchAPI(url);
-    // A API de nome retorna um array, então pegamos o primeiro item
+    // A API retorna um array, então pegamos o primeiro item
     return data[0];
   } catch (error) {
     console.error("Erro ao buscar dados do país:", error);
@@ -405,15 +456,14 @@ async function displayCountryDetails() {
     return;
   }
 
-  // Exibir mensagem de carregamento inicial
   container.innerHTML = `
-        <div class="d-flex flex-column align-items-center justify-content-center w-100 p-5">
-            <div class="spinner-border text-primary" role="status">
-                <span class="visually-hidden">Carregando...</span>
-            </div>
-            <p class="mt-2 text-muted">Carregando detalhes do país...</p>
-        </div>
-    `;
+    <div class="d-flex flex-column align-items-center justify-content-center w-100 p-5">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Carregando...</span>
+      </div>
+      <p class="mt-3 text-muted">Descobrindo o destino perfeito...</p>
+    </div>
+  `;
 
   try {
     const countryData = await getCountryData(countryName);
@@ -423,75 +473,150 @@ async function displayCountryDetails() {
       return;
     }
 
+    // Buscar clima e imagem em paralelo
     const [weatherData, imageUrl] = await Promise.all([
-      getWeather(countryData.latlng[0], countryData.latlng[1]),
+      countryData.latlng
+        ? getWeather(countryData.latlng[0], countryData.latlng[1])
+        : Promise.resolve(null),
       getCountryImage(countryName),
     ]);
 
-    const population = new Intl.NumberFormat("pt-BR").format(
-      countryData.population
-    );
-    const currency = getComplexData(countryData.currencies, "currency");
-    const language = getComplexData(countryData.languages, "language");
-    const weather = weatherData
-      ? `${weatherData.main.temp}°C, ${weatherData.weather[0].description}`
+    // Processar dados com tratamento melhorado
+    const population = countryData.population
+      ? new Intl.NumberFormat("pt-BR").format(countryData.population)
       : "N/A";
 
-    // Cria o HTML final da página de detalhes
+    const currency = getComplexData(countryData.currencies, "currency");
+    const language = getComplexData(countryData.languages, "language");
+
+    const weather = weatherData
+      ? `${Math.round(weatherData.main.temp)}°C, ${
+          weatherData.weather[0].description
+        }`
+      : "N/A";
+
+    const timezone =
+      countryData.timezones && countryData.timezones.length > 0
+        ? countryData.timezones[0]
+        : "N/A";
+
+    const capital =
+      countryData.capital && countryData.capital.length > 0
+        ? countryData.capital[0]
+        : "N/A";
+
+    const region = countryData.region || "N/A";
+    const subregion = countryData.subregion || "N/A";
+    const continent =
+      countryData.continents && countryData.continents.length > 0
+        ? countryData.continents[0]
+        : "N/A";
+
     const detailsHTML = `
-            <div class="row">
-                <div class="col-12 text-center mb-4">
-                    <h1 class="display-3 fw-bold">${
-                      countryData.name.common
-                    }</h1>
-                    <p class="lead">${countryData.name.official}</p>
-                </div>
-                <div class="col-lg-6 mb-4">
-                    <div class="card h-100 shadow-sm">
-                        <img src="${
-                          countryData.flags.svg
-                        }" class="card-img-top" alt="Bandeira do ${
-      countryData.name.common
-    }">
-                        <div class="card-body">
-                            <h5>Informações do País</h5>
-                            <ul class="list-unstyled">
-                                <li><strong>Capital:</strong> ${
-                                  countryData.capital
-                                    ? countryData.capital[0]
-                                    : "N/A"
-                                }</li>
-                                <li><strong>População:</strong> ${population}</li>
-                                <li><strong>Idioma:</strong> ${language}</li>
-                                <li><strong>Moeda:</strong> ${currency}</li>
-                                <li><strong>Fuso Horário:</strong> ${
-                                  countryData.timezones[0]
-                                }</li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-6 mb-4">
-                    <div class="card h-100 shadow-sm">
-                        <div class="card-body d-flex flex-column justify-content-between">
-                            <div>
-                                <h5>Clima</h5>
-                                <p>${weather}</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-12 mt-4">
-                    <img src="${imageUrl}" class="img-fluid rounded shadow" alt="Imagem de ${
-      countryData.name.common
-    }">
-                </div>
+      <div class="row g-4">
+        <div class="col-12 mb-4 text-center">
+          <h1 class="display-4 fw-bold text-primary">${
+            countryData.name.common
+          }</h1>
+          <p class="lead text-muted">${countryData.name.official}</p>
+        </div>
+
+        <div class="col-lg-6 col-md-12 mb-4">
+          <div class="card h-100 shadow-sm border-0 rounded-4">
+            <div class="card-body p-4">
+              <h5 class="fw-bold mb-3"><i class="fas fa-info-circle me-2"></i>Informações do País</h5>
+              <ul class="list-unstyled">
+                <li class="mb-2"><strong>Continente:</strong> ${continent}</li>
+                <li class="mb-2"><strong>Região:</strong> ${region}</li>
+                <li class="mb-2"><strong>Sub-região:</strong> ${subregion}</li>
+                <li class="mb-2"><strong>Capital:</strong> ${capital}</li>
+                <li class="mb-2"><strong>População:</strong> ${population}</li>
+                <li class="mb-2"><strong>Idioma:</strong> ${language}</li>
+                <li class="mb-2"><strong>Moeda:</strong> ${currency}</li>
+                <li class="mb-2"><strong>Fuso Horário:</strong> ${timezone}</li>
+              </ul>
             </div>
-        `;
+          </div>
+        </div>
+
+        <div class="col-lg-6 col-md-12 mb-4">
+          <div class="card h-100 shadow-sm border-0 rounded-4">
+            <div class="card-body p-4">
+              <h5 class="fw-bold mb-3"><i class="fas fa-cloud-sun me-2"></i>Clima Atual</h5>
+              ${
+                weatherData
+                  ? `
+                <div class="d-flex align-items-center mb-3">
+                  <div class="me-3">
+                    <i class="fas fa-thermometer-half fa-2x text-warning"></i>
+                  </div>
+                  <div>
+                    <p class="mb-0 fw-bold">${Math.round(
+                      weatherData.main.temp
+                    )}°C</p>
+                    <p class="text-muted text-capitalize">${
+                      weatherData.weather[0].description
+                    }</p>
+                  </div>
+                </div>
+                <div class="row g-2">
+                  <div class="col-6">
+                    <small class="text-muted">Sensação</small>
+                    <p class="mb-0">${Math.round(
+                      weatherData.main.feels_like
+                    )}°C</p>
+                  </div>
+                  <div class="col-6">
+                    <small class="text-muted">Umidade</small>
+                    <p class="mb-0">${weatherData.main.humidity}%</p>
+                  </div>
+                </div>
+              `
+                  : `
+                <p class="text-muted">Dados climáticos não disponíveis para este país.</p>
+              `
+              }
+            </div>
+          </div>
+        </div>
+
+        <div class="col-12 mb-4">
+          <div class="card h-100 shadow-sm border-0 rounded-4">
+            <div class="card-body p-4 text-center">
+              <img src="${countryData.flags.svg}" 
+                   alt="Bandeira de ${countryData.name.common}"
+                   class="img-fluid rounded-3" 
+                   style="max-width: 300px; max-height: 200px; box-shadow: 0 4px 15px rgba(0,0,0,0.2);">
+            </div>
+          </div>
+        </div>
+
+        <div class="col-12">
+          <div class="card h-100 shadow-sm border-0 rounded-4 overflow-hidden position-relative">
+            <img src="${imageUrl}" 
+                 alt="Imagem de ${countryData.name.common}"
+                 class="img-fluid rounded-4"
+                 style="object-fit: cover; height: 400px;">
+            <div class="card-img-overlay d-flex align-items-end p-4">
+              <div class="bg-dark bg-opacity-75 p-3 rounded-3 w-100">
+                <h5 class="text-white mb-0">${countryData.name.common}</h5>
+                <p class="text-white small mb-0">${region} • ${continent}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+
     container.innerHTML = detailsHTML;
   } catch (error) {
     console.error("Falha ao carregar os detalhes:", error);
-    container.innerHTML = `<div class="alert alert-danger w-100">Ocorreu um erro ao carregar os detalhes do país.</div>`;
+    container.innerHTML = `
+      <div class="alert alert-danger w-100">
+        <i class="fas fa-exclamation-triangle me-2"></i>
+        Ocorreu um erro ao carregar os detalhes do país.
+      </div>
+    `;
   }
 }
 
@@ -500,19 +625,20 @@ async function displayCountryDetails() {
 // ----------------------------------------------------------------------
 
 document.addEventListener("DOMContentLoaded", () => {
-  if (window.location.pathname.includes("places.html")) {
-    // Pega o termo de busca da URL
-    const searchTerm = getSearchTermFromUrl();
+  // Adicione esta nova condição para a página intro.html
+  if (window.location.pathname.includes("intro.html")) {
+    displayFeaturedCountries();
+  }
 
-    // Se houver um termo de busca na URL, preenche o input e executa a busca
+  if (window.location.pathname.includes("places.html")) {
+    // ... (o código existente para places.html permanece aqui)
+    const searchTerm = getSearchTermFromUrl();
     if (searchTerm) {
       if (searchCountryInput) {
         searchCountryInput.value = decodeURIComponent(searchTerm);
       }
-      // Executa a busca com o termo da URL
       searchCountries(decodeURIComponent(searchTerm));
     } else {
-      // Se não houver, carrega todos os países normalmente
       getAllCountries();
     }
   }
@@ -520,4 +646,253 @@ document.addEventListener("DOMContentLoaded", () => {
   if (window.location.pathname.includes("country.html")) {
     displayCountryDetails();
   }
+});
+
+/**
+ * Busca e exibe uma seleção de países em destaque.
+ */
+async function displayFeaturedCountries() {
+  const container = document.getElementById("featured-countries-container");
+  if (!container) return;
+
+  // Lista de países que queremos destacar
+  const featuredCountriesNames = [
+    "Brazil",
+    "Japan",
+    "Italy",
+    "Egypt",
+    "Australia",
+    "Canada",
+  ];
+
+  container.innerHTML = `
+    <div class="text-center w-100 py-5">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Carregando destinos em destaque...</span>
+      </div>
+      <p class="mt-3 text-muted">Preparando os melhores destinos para você...</p>
+    </div>`;
+
+  try {
+    // Buscar dados de todos os países em paralelo
+    const countryPromises = featuredCountriesNames.map((name) =>
+      fetchAPI(
+        `https://restcountries.com/v3.1/name/${name}?fields=name,flags,capital,population,languages,currencies,latlng,region,continents`
+      )
+    );
+
+    const results = await Promise.all(countryPromises);
+
+    // Criar HTML dos cards com dados completos
+    let cardsHTML = "";
+    for (let i = 0; i < results.length; i++) {
+      const countryData = results[i][0];
+      const capital = countryData.capital ? countryData.capital[0] : "N/A";
+      const population = new Intl.NumberFormat("pt-BR").format(
+        countryData.population
+      );
+      const language = getComplexData(countryData.languages, "language");
+      const currency = getComplexData(countryData.currencies, "currency");
+      const region = countryData.region || "N/A";
+      const continent =
+        countryData.continents && countryData.continents.length > 0
+          ? countryData.continents[0]
+          : "N/A";
+
+      // Buscar clima se tiver coordenadas
+      let weatherData = null;
+      if (countryData.latlng && countryData.latlng.length >= 2) {
+        try {
+          weatherData = await getWeather(
+            countryData.latlng[0],
+            countryData.latlng[1]
+          );
+        } catch (weatherError) {
+          console.warn(
+            `Não foi possível obter clima para ${countryData.name.common}:`,
+            weatherError
+          );
+        }
+      }
+
+      cardsHTML += `
+        <div class="col-lg-6 col-md-12 mb-4">
+          <div class="featured-country-card h-100 shadow-lg border-0 rounded-4 overflow-hidden">
+            <!-- Header com bandeira e informações principais -->
+            <div class="position-relative">
+              <img src="${countryData.flags.svg}" 
+                   alt="Bandeira de ${countryData.name.common}"
+                   class="featured-flag-img w-100"
+                   style="height: 200px; object-fit: cover;">
+              <div class="featured-country-overlay d-flex align-items-end p-4">
+                <div class="w-100">
+                  <h3 class="text-white fw-bold mb-2">${
+                    countryData.name.common
+                  }</h3>
+                  <div class="d-flex flex-wrap gap-2">
+                    <span class="badge bg-primary rounded-pill">${continent}</span>
+                    <span class="badge bg-success rounded-pill">${region}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Corpo com informações detalhadas -->
+            <div class="card-body p-4">
+              <div class="row g-3">
+                <div class="col-md-6">
+                  <h5 class="fw-bold text-primary mb-3">
+                    <i class="fas fa-info-circle me-2"></i>Informações
+                  </h5>
+                  <div class="info-item mb-2">
+                    <small class="text-muted">Capital</small>
+                    <p class="mb-0 fw-medium">${capital}</p>
+                  </div>
+                  <div class="info-item mb-2">
+                    <small class="text-muted">População</small>
+                    <p class="mb-0 fw-medium">${population}</p>
+                  </div>
+                  <div class="info-item mb-2">
+                    <small class="text-muted">Idioma</small>
+                    <p class="mb-0 fw-medium">${language}</p>
+                  </div>
+                  <div class="info-item">
+                    <small class="text-muted">Moeda</small>
+                    <p class="mb-0 fw-medium">${currency}</p>
+                  </div>
+                </div>
+                
+                <div class="col-md-6">
+                  <h5 class="fw-bold text-primary mb-3">
+                    <i class="fas fa-cloud-sun me-2"></i>Clima
+                  </h5>
+                  ${
+                    weatherData
+                      ? `
+                    <div class="weather-card bg-light bg-opacity-50 rounded-3 p-3">
+                      <div class="d-flex align-items-center mb-2">
+                        <i class="fas fa-thermometer-half text-warning me-2"></i>
+                        <span class="fw-bold">${Math.round(
+                          weatherData.main.temp
+                        )}°C</span>
+                      </div>
+                      <div class="weather-description text-muted small text-capitalize">
+                        ${weatherData.weather[0].description}
+                      </div>
+                      <div class="weather-details mt-2 small">
+                        <div class="d-flex justify-content-between">
+                          <span>Umidade:</span>
+                          <span>${weatherData.main.humidity}%</span>
+                        </div>
+                        <div class="d-flex justify-content-between">
+                          <span>Sensação:</span>
+                          <span>${Math.round(
+                            weatherData.main.feels_like
+                          )}°C</span>
+                        </div>
+                      </div>
+                    </div>
+                  `
+                      : `
+                    <div class="alert alert-info small mb-0">
+                      <i class="fas fa-info-circle me-2"></i>
+                      Dados climáticos indisponíveis
+                    </div>
+                  `
+                  }
+                </div>
+              </div>
+              
+              <!-- Botão de ação -->
+              <div class="mt-4">
+                <a href="country.html?name=${encodeURIComponent(
+                  countryData.name.common
+                )}" 
+                   class="btn btn-primary w-100 rounded-pill fw-medium">
+                  <i class="fas fa-map-marker-alt me-2"></i>Explorar ${
+                    countryData.name.common
+                  }
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    container.innerHTML = cardsHTML;
+  } catch (error) {
+    console.error("Erro ao buscar países em destaque:", error);
+    container.innerHTML = `
+      <div class="col-12">
+        <div class="alert alert-danger text-center" role="alert">
+          <i class="fas fa-exclamation-triangle me-2"></i>
+          Não foi possível carregar os países em destaque. Por favor, tente novamente mais tarde.
+        </div>
+      </div>
+    `;
+  }
+}
+
+function showLoadingState() {
+  return `
+    <div class="col-12 text-center my-5">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Carregando países...</span>
+      </div>
+      <p class="mt-3 text-muted">Preparando seu próximo destino...</p>
+    </div>
+  `;
+}
+
+// Função para melhorar a acessibilidade
+function enhanceAccessibility() {
+  // Adicionar aria-labels aos links
+  const links = document.querySelectorAll("a");
+  links.forEach((link) => {
+    if (!link.getAttribute("aria-label") && link.textContent.trim()) {
+      link.setAttribute("aria-label", link.textContent.trim());
+    }
+  });
+
+  // Adicionar focus visível
+  const focusableElements = document.querySelectorAll(
+    "a, button, input, select"
+  );
+  focusableElements.forEach((element) => {
+    element.addEventListener("focus", () => {
+      element.style.outline = "2px solid var(--primary-color)";
+    });
+
+    element.addEventListener("blur", () => {
+      element.style.outline = "";
+    });
+  });
+}
+
+// Função para animações de scroll
+function animateOnScroll() {
+  const elements = document.querySelectorAll(".card, h1, h2, h3");
+  elements.forEach((element) => {
+    element.style.opacity = "0";
+    element.style.transform = "translateY(20px)";
+    element.style.transition = "opacity 0.6s ease, transform 0.6s ease";
+  });
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        entry.target.style.opacity = "1";
+        entry.target.style.transform = "translateY(0)";
+      }
+    });
+  });
+
+  elements.forEach((element) => observer.observe(element));
+}
+
+// Inicializar quando o DOM carregar
+document.addEventListener("DOMContentLoaded", () => {
+  enhanceAccessibility();
+  animateOnScroll();
 });

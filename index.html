@@ -11,6 +11,10 @@
       crossorigin="anonymous"
     />
     <link rel="stylesheet" href="css/style.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    />
   </head>
   <body>
     <header class="bg-white shadow-sm">
@@ -57,102 +61,255 @@
     </header>
 
     <main class="container my-5">
-      <section class="introduction row g-4 align-items-center mb-5">
-        <div class="col-12 col-lg-4 d-flex justify-content-center">
-          <img
-            src="assets/logo.png"
-            alt="Logo NoMap"
-            class="img-fluid"
-            style="max-width: 250px"
-          />
-        </div>
-
-        <div class="col-12 col-lg-8 text-center text-lg-start">
-          <h1>NoMap</h1>
-          <p class="fs-4 text-muted">Seu guia de viagens sem fronteiras.</p>
-        </div>
-      </section>
-
-      <section class="explore-cards mb-5">
-        <h2 class="mb-4">Explore</h2>
-        <div class="row row-cols-2 row-cols-md-3 g-4">
-          <div class="col">
-            <div class="card h-100 text-center shadow-sm">
-              <div class="card-body">
-                <h5 class="card-title">
-                  <a href="intro.html">Países em Destaque</a>
-                </h5>
-              </div>
+      <!-- Hero Section -->
+      <section class="hero-section text-center mb-5 py-5">
+        <div class="row align-items-center">
+          <div class="col-lg-6 mb-4 mb-lg-0">
+            <h1 class="display-3 fw-bold text-primary mb-3">
+              Descubra o Mundo
+            </h1>
+            <p class="lead text-muted mb-4">
+              Seu guia completo para explorar destinos incríveis sem fronteiras.
+            </p>
+            <div
+              class="d-flex flex-column flex-sm-row gap-3 justify-content-center"
+            >
+              <a href="places.html" class="btn btn-primary btn-lg px-4 py-3">
+                <i class="fas fa-globe-americas me-2"></i>Explorar Países
+              </a>
+              <a
+                href="intro.html"
+                class="btn btn-outline-primary btn-lg px-4 py-3"
+              >
+                <i class="fas fa-star me-2"></i>Ver Destaques
+              </a>
             </div>
           </div>
-          <div class="col">
-            <div class="card h-100 text-center shadow-sm">
-              <div class="card-body">
-                <h5 class="card-title">
-                  <a href="places.html">Todos os Países</a>
-                </h5>
-              </div>
-            </div>
-          </div>
-          <div class="col">
-            <div class="card h-100 text-center shadow-sm">
-              <div class="card-body">
-                <h5 class="card-title"><a href="about.html">Quem Somos</a></h5>
-              </div>
-            </div>
-          </div>
-          <div class="col">
-            <div class="card h-100 text-center shadow-sm">
-              <div class="card-body">
-                <h5 class="card-title">
-                  <a href="mission.html">O que Buscamos</a>
-                </h5>
-              </div>
+          <div class="col-lg-6">
+            <div
+              class="hero-image-container rounded-4 overflow-hidden shadow-lg"
+            >
+              <img
+                src="assets/logo.png"
+                alt="Viagem pelo mundo"
+                class="img-fluid w-100"
+                style="height: 400px; object-fit: cover"
+              />
             </div>
           </div>
         </div>
       </section>
 
-      <hr class="my-5" />
+      <!-- Explore Cards - Navegação Estética -->
+      <section class="explore-section mb-5">
+        <h2 class="text-center mb-4">Comece Sua Jornada</h2>
+        <p class="text-center text-muted mb-5">Escolha o que deseja explorar</p>
 
-      <section class="info">
-        <h2 class="mb-4">Sobre o NoMap</h2>
-        <div class="row g-4 align-items-center my-4">
-          <div class="col-md-6 order-md-1">
-            <h3>Título da Informação</h3>
-            <p>
-              Descrição da Informação. Vamos colocar um texto mais detalhado
-              sobre o site aqui.
-            </p>
+        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4">
+          <!-- Card 1 -->
+          <div class="col">
+            <div class="card h-100 explore-card border-0 shadow-sm">
+              <div class="card-body text-center p-4">
+                <div
+                  class="icon-wrapper bg-primary bg-opacity-10 rounded-circle p-3 mb-3 mx-auto"
+                >
+                  <i class="fas fa-star fa-2x text-primary"></i>
+                </div>
+                <h5 class="card-title fw-bold mb-3">Países em Destaque</h5>
+                <p class="card-text text-muted small mb-4">
+                  Descubra os destinos mais recomendados pelos nossos
+                  especialistas.
+                </p>
+                <a href="intro.html" class="btn btn-primary stretched-link">
+                  Explorar <i class="fas fa-arrow-right ms-2"></i>
+                </a>
+              </div>
+            </div>
           </div>
-          <div class="col-md-6 order-md-2">
-            <div class="bg-light p-5 rounded text-center">Imagem/Ícone</div>
+
+          <!-- Card 2 -->
+          <div class="col">
+            <div class="card h-100 explore-card border-0 shadow-sm">
+              <div class="card-body text-center p-4">
+                <div
+                  class="icon-wrapper bg-success bg-opacity-10 rounded-circle p-3 mb-3 mx-auto"
+                >
+                  <i class="fas fa-globe-americas fa-2x text-success"></i>
+                </div>
+                <h5 class="card-title fw-bold mb-3">Todos os Países</h5>
+                <p class="card-text text-muted small mb-4">
+                  Explore nossa base completa com informações de todos os
+                  destinos.
+                </p>
+                <a href="places.html" class="btn btn-success stretched-link">
+                  Ver Todos <i class="fas fa-arrow-right ms-2"></i>
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 3 -->
+          <div class="col">
+            <div class="card h-100 explore-card border-0 shadow-sm">
+              <div class="card-body text-center p-4">
+                <div
+                  class="icon-wrapper bg-info bg-opacity-10 rounded-circle p-3 mb-3 mx-auto"
+                >
+                  <i class="fas fa-users fa-2x text-info"></i>
+                </div>
+                <h5 class="card-title fw-bold mb-3">Quem Somos</h5>
+                <p class="card-text text-muted small mb-4">
+                  Conheça nossa equipe apaixonada por viagens e tecnologia.
+                </p>
+                <a href="about.html" class="btn btn-info stretched-link">
+                  Conhecer <i class="fas fa-arrow-right ms-2"></i>
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 4 -->
+          <div class="col">
+            <div class="card h-100 explore-card border-0 shadow-sm">
+              <div class="card-body text-center p-4">
+                <div
+                  class="icon-wrapper bg-warning bg-opacity-10 rounded-circle p-3 mb-3 mx-auto"
+                >
+                  <i class="fas fa-bullseye fa-2x text-warning"></i>
+                </div>
+                <h5 class="card-title fw-bold mb-3">Nossa Missão</h5>
+                <p class="card-text text-muted small mb-4">
+                  Descubra nossa visão para o futuro dos guias de viagem.
+                </p>
+                <a href="mission.html" class="btn btn-warning stretched-link">
+                  Nossa Visão <i class="fas fa-arrow-right ms-2"></i>
+                </a>
+              </div>
+            </div>
           </div>
         </div>
-        <div class="row g-4 align-items-center my-4">
-          <div class="col-md-6 order-md-2">
-            <h3>Título da Informação</h3>
-            <p>
-              Descrição da Informação. Outro texto para falar dos nossos
-              recursos ou da nossa missão.
-            </p>
+      </section>
+
+      <!-- Sobre o NoMap - Textos Informativos -->
+      <section class="about-section py-5">
+        <div class="text-center mb-5">
+          <h2 class="display-5 fw-bold mb-3">Por Que Escolher o NoMap?</h2>
+          <p class="lead text-muted">
+            A revolução no jeito de planejar suas viagens
+          </p>
+        </div>
+
+        <div class="row g-5 align-items-center mb-5">
+          <div class="col-lg-6 order-lg-2">
+            <div
+              class="feature-image bg-light rounded-4 p-5 text-center shadow-sm"
+            >
+              <i class="fas fa-map-marked-alt fa-4x text-primary mb-3"></i>
+              <h4>Informações Completas</h4>
+            </div>
           </div>
-          <div class="col-md-6 order-md-1">
-            <div class="bg-light p-5 rounded text-center">Imagem/Ícone</div>
+          <div class="col-lg-6 order-lg-1">
+            <h3 class="fw-bold mb-4">Tudo em Um Só Lugar</h3>
+            <p class="text-muted mb-4">
+              Cansado de procurar informações em vários sites diferentes? O
+              NoMap reúne tudo o que você precisa saber sobre um destino em uma
+              única plataforma intuitiva.
+            </p>
+            <ul class="list-unstyled">
+              <li class="mb-2">
+                <i class="fas fa-check-circle text-success me-2"></i> Dados
+                atualizados em tempo real
+              </li>
+              <li class="mb-2">
+                <i class="fas fa-check-circle text-success me-2"></i>
+                Informações culturais e práticas
+              </li>
+              <li class="mb-2">
+                <i class="fas fa-check-circle text-success me-2"></i> Clima
+                atual e previsões
+              </li>
+              <li class="mb-2">
+                <i class="fas fa-check-circle text-success me-2"></i> Imagens
+                inspiradoras
+              </li>
+            </ul>
           </div>
         </div>
+
+        <div class="row g-5 align-items-center">
+          <div class="col-lg-6">
+            <div
+              class="feature-image bg-light rounded-4 p-5 text-center shadow-sm"
+            >
+              <i class="fas fa-user-friends fa-4x text-primary mb-3"></i>
+              <h4>Comunidade de Viajantes</h4>
+            </div>
+          </div>
+          <div class="col-lg-6">
+            <h3 class="fw-bold mb-4">Feito por Viajantes, para Viajantes</h3>
+            <p class="text-muted mb-4">
+              Nosso time é composto por apaixonados por viagens que entendem as
+              necessidades reais de quem está planejando uma aventura pelo
+              mundo.
+            </p>
+            <div class="d-flex align-items-center mb-3">
+              <div class="bg-primary bg-opacity-10 rounded-circle p-2 me-3">
+                <i class="fas fa-heart text-primary"></i>
+              </div>
+              <div>
+                <h6 class="mb-0">Experiência Autêntica</h6>
+                <small class="text-muted"
+                  >Dicas baseadas em experiências reais</small
+                >
+              </div>
+            </div>
+            <div class="d-flex align-items-center mb-3">
+              <div class="bg-primary bg-opacity-10 rounded-circle p-2 me-3">
+                <i class="fas fa-lightbulb text-primary"></i>
+              </div>
+              <div>
+                <h6 class="mb-0">Inovação Constante</h6>
+                <small class="text-muted"
+                  >Sempre buscando melhorias para você</small
+                >
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Call to Action Final -->
+      <section
+        class="cta-section bg-primary bg-opacity-10 rounded-4 p-5 text-center my-5"
+      >
+        <h3 class="fw-bold mb-3">Pronto para Começar sua Próxima Aventura?</h3>
+        <p class="text-muted mb-4">
+          Explore nosso guia completo e descubra destinos incríveis
+        </p>
+        <a href="places.html" class="btn btn-primary btn-lg px-5 py-3">
+          <i class="fas fa-compass me-2"></i>Começar a Explorar
+        </a>
       </section>
     </main>
 
-    <footer class="bg-dark text-white text-center py-3 mt-5">
-      <p class="m-0">&copy; 2025 NoMap. Todos os direitos reservados.</p>
+    <footer class="bg-dark text-white text-center py-4 mt-5">
+      <div class="container">
+        <p class="m-0">&copy; 2025 NoMap. Todos os direitos reservados.</p>
+        <div class="mt-2">
+          <a href="#" class="text-white text-decoration-none me-3"
+            ><i class="fab fa-instagram"></i
+          ></a>
+          <a href="#" class="text-white text-decoration-none me-3"
+            ><i class="fab fa-twitter"></i
+          ></a>
+          <a href="#" class="text-white text-decoration-none"
+            ><i class="fab fa-facebook"></i
+          ></a>
+        </div>
+      </div>
     </footer>
 
-    <script
-      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
-      integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
-      crossorigin="anonymous"
-    ></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="js/app.js"></script>
   </body>
 </html>

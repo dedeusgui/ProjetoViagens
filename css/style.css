@@ -32,3 +32,370 @@
   transform: translateY(-5px);
   box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.15) !important;
 }
+
+/* Cards de Países - Estilos Customizados */
+.country-card {
+  transition: all 0.3s ease;
+  transform: translateY(0);
+}
+
+.country-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15) !important;
+}
+
+.country-flag-img {
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.country-card:hover .country-flag-img {
+  transform: scale(1.05);
+}
+
+.country-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(transparent 80%, rgba(0, 0, 0, 0.7));
+}
+
+.country-info-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  background-color: rgba(13, 110, 253, 0.05);
+  padding: 1rem;
+  border-radius: 0.5rem;
+}
+
+.info-item small {
+  font-size: 0.75rem;
+}
+
+.info-item p {
+  font-size: 0.9rem;
+}
+
+/* Loading States */
+.spinner-border {
+  width: 3rem;
+  height: 3rem;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  .country-info-grid {
+    grid-template-columns: 1fr;
+    gap: 0.5rem;
+  }
+}
+
+/* Estilos para a página de detalhes do país */
+.country-details-page {
+  min-height: 100vh;
+  background-color: #f8f9fa;
+}
+
+.card {
+  transition: all 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+}
+
+.card-body {
+  padding: 2rem;
+}
+
+.card-title {
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.card-text {
+  font-size: 1rem;
+}
+
+/* Progress bar personalizada */
+.progress {
+  border-radius: 4px;
+}
+
+/* Animação de entrada suave */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.card {
+  animation: fadeInUp 0.6s ease-out;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+  .card-body {
+    padding: 1.5rem;
+  }
+
+  .card-img-overlay {
+    padding: 1rem;
+  }
+
+  .progress {
+    height: 6px;
+  }
+}
+/* Estilo para a página de destaque */
+.featured-countries-section {
+  min-height: 80vh;
+}
+
+/* Card de país destacado */
+.featured-country-card {
+  border: none;
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow);
+  transition: var(--transition);
+  overflow: hidden;
+  position: relative;
+}
+
+.featured-country-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+}
+
+/* Fundo da bandeira com parallax suave */
+.featured-flag-bg {
+  background-size: cover;
+  background-position: center;
+  height: 150px;
+  position: relative;
+  opacity: 0.9;
+  z-index: 1;
+}
+
+.featured-flag-bg::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    135deg,
+    rgba(0, 0, 0, 0.4) 0%,
+    rgba(0, 0, 0, 0.7) 100%
+  );
+  z-index: 2;
+}
+
+/* Título do país sobre a bandeira */
+.featured-country-title {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  padding: 2rem;
+  color: white;
+  text-align: center;
+  font-size: 2rem;
+  font-weight: bold;
+  z-index: 3;
+  text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.8);
+  letter-spacing: 1px;
+}
+
+/* Info sobre o país */
+.featured-info-card {
+  background-color: white;
+  border-top: 1px solid #e1e5eb;
+  padding: 1.5rem;
+  margin-bottom: 0;
+}
+
+.featured-info-card h5 {
+  margin-bottom: 0.5rem;
+  color: var(--primary-color);
+}
+
+.featured-info-card p {
+  margin-bottom: 0;
+  color: #6c757d;
+  font-size: 0.95rem;
+}
+
+/* Clima do país */
+.featured-climate-card {
+  background-color: #f8f9fa;
+  border-top: 1px solid #e1e5eb;
+  padding: 1.5rem;
+  margin-bottom: 0;
+  border-bottom-left-radius: var(--border-radius);
+  border-bottom-right-radius: var(--border-radius);
+}
+
+.featured-climate-card h5 {
+  margin-bottom: 0.5rem;
+  color: #0d6efd;
+}
+
+.featured-climate-card p {
+  margin-bottom: 0;
+  color: #6c757d;
+  font-size: 0.95rem;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+  .featured-country-card {
+    margin-bottom: 1rem;
+  }
+
+  .featured-flag-bg {
+    height: 120px;
+  }
+
+  .featured-country-title {
+    font-size: 1.5rem;
+    padding: 1.5rem;
+  }
+}
+/* Featured Countries Cards - Estilo Aprimorado */
+.featured-country-card {
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  border: none;
+  background: white;
+  border-radius: var(--border-radius);
+}
+
+.featured-country-card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2) !important;
+}
+
+.featured-flag-img {
+  transition: transform 0.3s ease;
+}
+
+.featured-country-card:hover .featured-flag-img {
+  transform: scale(1.05);
+}
+
+.featured-country-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(transparent 60%, rgba(0, 0, 0, 0.8));
+}
+
+/* Informações do país */
+.info-item small {
+  font-size: 0.75rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.info-item p {
+  font-size: 0.95rem;
+  margin-bottom: 0.5rem;
+}
+
+/* Card de clima */
+.weather-card {
+  transition: all 0.3s ease;
+}
+
+.weather-card:hover {
+  background-color: rgba(13, 110, 253, 0.1) !important;
+}
+
+.weather-description {
+  font-size: 0.85rem;
+}
+
+.weather-details {
+  font-size: 0.8rem;
+}
+
+/* Badges de região */
+.badge {
+  font-size: 0.75rem;
+  font-weight: 500;
+  padding: 0.5em 0.75em;
+}
+
+/* Loading state */
+.spinner-border {
+  width: 3rem;
+  height: 3rem;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+  .featured-country-overlay {
+    background: linear-gradient(transparent 40%, rgba(0, 0, 0, 0.9));
+  }
+
+  .featured-flag-img {
+    height: 180px !important;
+  }
+
+  .info-item small {
+    font-size: 0.7rem;
+  }
+
+  .info-item p {
+    font-size: 0.9rem;
+  }
+}
+
+/* Animação de entrada */
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.featured-country-card {
+  animation: slideInUp 0.6s ease-out;
+  animation-fill-mode: both;
+}
+
+.featured-country-card:nth-child(1) {
+  animation-delay: 0.1s;
+}
+.featured-country-card:nth-child(2) {
+  animation-delay: 0.2s;
+}
+.featured-country-card:nth-child(3) {
+  animation-delay: 0.3s;
+}
+.featured-country-card:nth-child(4) {
+  animation-delay: 0.4s;
+}
+.featured-country-card:nth-child(5) {
+  animation-delay: 0.5s;
+}
+.featured-country-card:nth-child(6) {
+  animation-delay: 0.6s;
+}
