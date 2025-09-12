@@ -194,53 +194,49 @@ function displayCountriesGrid(countries) {
       const capital = country.capital ? country.capital[0] : "N/A";
 
       return `
-      <div class="col-lg-4 col-md-6 col-12 mb-4">
-        <div class="card country-card h-100 shadow-sm border-0 rounded-3 overflow-hidden">
-          <div class="position-relative overflow-hidden" style="height: 200px;">
+      <div class="col">
+        <div class="card country-card h-100 shadow-sm border-0">
+          <!-- Bandeira maior sem overlay -->
+          <div class="position-relative">
             <img src="${country.flags.svg}" 
-                 class="card-img-top country-flag-img" 
-                 alt="Bandeira de ${country.name.common}"
-                 loading="lazy">
-            <div class="country-overlay d-flex align-items-end p-3">
-              <span class="badge bg-primary rounded-pill">${continent}</span>
+                 class="country-flag-img" 
+                 alt="Bandeira de ${country.name.common}">
+            <!-- Badge do continente visível -->
+            <div class="country-badge-container">
+              <span class="country-badge">${continent}</span>
             </div>
           </div>
           
-          <div class="card-body d-flex flex-column">
-            <div class="mb-3">
-              <h5 class="card-title fw-bold text-primary mb-1">${
-                country.name.common
-              }</h5>
-              <p class="card-text text-muted small mb-0">
-                <i class="fas fa-landmark me-1"></i> ${capital}
-              </p>
-            </div>
+          <div class="card-body">
+            <h5 class="card-title fw-bold text-primary">${
+              country.name.common
+            }</h5>
             
-            <div class="country-info-grid mb-3">
+            <div class="country-info-grid">
               <div class="info-item">
-                <small class="text-muted">População</small>
-                <p class="mb-0 fw-medium">${population}</p>
+                <small>Capital</small>
+                <p class="mb-0">${capital}</p>
               </div>
               <div class="info-item">
-                <small class="text-muted">Moeda</small>
-                <p class="mb-0 fw-medium text-truncate" title="${currency}">${currency}</p>
+                <small>População</small>
+                <p class="mb-0">${population}</p>
+              </div>
+              <div class="info-item">
+                <small>Idioma</small>
+                <p class="mb-0 text-truncate" title="${language}">${language}</p>
+              </div>
+              <div class="info-item">
+                <small>Moeda</small>
+                <p class="mb-0 text-truncate" title="${currency}">${currency}</p>
               </div>
             </div>
             
-            <div class="mt-auto">
-              <div class="d-flex justify-content-between align-items-center mb-3">
-                <small class="text-muted">
-                  <i class="fas fa-language me-1"></i> ${language}
-                </small>
-              </div>
-              
-              <a href="country.html?name=${encodeURIComponent(
-                country.name.common
-              )}" 
-                 class="btn btn-outline-primary w-100 rounded-pill fw-medium">
-                <i class="fas fa-map-marker-alt me-2"></i>Explorar
-              </a>
-            </div>
+            <a href="country.html?name=${encodeURIComponent(
+              country.name.common
+            )}" 
+               class="btn btn-primary w-100">
+              <i class="fas fa-map-marker-alt me-2"></i>Explorar
+            </a>
           </div>
         </div>
       </div>
