@@ -143,21 +143,18 @@ nomap/
 <table>
   <tr>
     <td align="center">
-      <img src="https://via.placeholder.com/100x100" width="100px;" alt="Bruno"/>
       <br />
       <sub><b>Bruno</b></sub>
       <br />
       <sub>🧪 Quality Assurance</sub>
     </td>
     <td align="center">
-      <img src="https://via.placeholder.com/100x100" width="100px;" alt="Guilherme"/>
       <br />
       <sub><b>Guilherme</b></sub>
       <br />
       <sub>👨‍💻 Desenvolvedor Sênior</sub>
     </td>
     <td align="center">
-      <img src="https://via.placeholder.com/100x100" width="100px;" alt="Felipe"/>
       <br />
       <sub><b>Felipe</b></sub>
       <br />
