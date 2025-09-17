@@ -146,7 +146,7 @@ nomap/
       <br />
       <sub><b>Bruno</b></sub>
       <br />
-      <sub>🧪 Quality Assurance</sub>
+      <sub>🧪 Tester</sub>
     </td>
     <td align="center">
       <br />
