@@ -171,6 +171,11 @@ async function getCountriesByRegion(region) {
  * @param {Array} countries - Array de objetos com dados de países.
  */
 function displayCountriesGrid(countries) {
+  if (!countriesGrid) {
+    console.error("Elemento countries-grid não encontrado");
+    return;
+  }
+
   countriesGrid.innerHTML = "";
 
   if (!countries || countries.length === 0) {
@@ -185,66 +190,90 @@ function displayCountriesGrid(countries) {
 
   const html = countries
     .map((country) => {
-      const population = new Intl.NumberFormat("pt-BR").format(
-        country.population
-      );
-      const currency = getComplexData(country.currencies, "currency");
-      const language = getComplexData(country.languages, "language");
-      const continent = country.continents ? country.continents[0] : "N/A";
-      const capital = country.capital ? country.capital[0] : "N/A";
+      try {
+        const population = country.population
+          ? new Intl.NumberFormat("pt-BR").format(country.population)
+          : "N/A";
+        const currency = getComplexData(country.currencies, "currency");
+        const language = getComplexData(country.languages, "language");
+        const continent =
+          country.continents && country.continents.length > 0
+            ? country.continents[0]
+            : "N/A";
+        const capital =
+          country.capital && country.capital.length > 0
+            ? country.capital[0]
+            : "N/A";
+        const flagUrl =
+          country.flags && country.flags.svg
+            ? country.flags.svg
+            : country.flags?.png ||
+              "https://via.placeholder.com/300x200?text=Bandeira";
+        const countryName = country.name?.common || "País desconhecido";
 
-      return `
-      <div class="col">
-        <div class="card country-card h-100 shadow-sm border-0 card-hover-lift card-hover-border">
-          <!-- Bandeira maior sem overlay -->
-          <div class="position-relative">
-            <img src="${country.flags.svg}" 
-                 class="country-flag-img" 
-                 alt="Bandeira de ${country.name.common}">
-            <!-- Badge do continente visível -->
-            <div class="country-badge-container">
-              <span class="country-badge">${continent}</span>
-            </div>
-          </div>
-          
-          <div class="card-body">
-            <h5 class="card-title fw-bold text-primary">${
-              country.name.common
-            }</h5>
-            
-            <div class="country-info-grid">
-              <div class="info-item">
-                <small>Capital</small>
-                <p class="mb-0">${capital}</p>
-              </div>
-              <div class="info-item">
-                <small>População</small>
-                <p class="mb-0">${population}</p>
-              </div>
-              <div class="info-item">
-                <small>Idioma</small>
-                <p class="mb-0 text-truncate" title="${language}">${language}</p>
-              </div>
-              <div class="info-item">
-                <small>Moeda</small>
-                <p class="mb-0 text-truncate" title="${currency}">${currency}</p>
+        return `
+        <div class="col">
+          <div class="card country-card h-100 shadow-sm border-0 card-hover-lift card-hover-border">
+            <!-- Bandeira maior sem overlay -->
+            <div class="position-relative">
+              <img src="${flagUrl}" 
+                   class="country-flag-img" 
+                   alt="Bandeira de ${countryName}"
+                   onerror="this.src='https://via.placeholder.com/300x200?text=Bandeira'">
+              <!-- Badge do continente visível -->
+              <div class="country-badge-container">
+                <span class="country-badge">${continent}</span>
               </div>
             </div>
             
-            <a href="country.html?name=${encodeURIComponent(
-              country.name.common
-            )}" 
-               class="btn btn-primary w-100">
-              <i class="fas fa-map-marker-alt me-2"></i>Explorar
-            </a>
+            <div class="card-body">
+              <h5 class="card-title fw-bold text-primary">${countryName}</h5>
+              
+              <div class="country-info-grid">
+                <div class="info-item">
+                  <small>Capital</small>
+                  <p class="mb-0">${capital}</p>
+                </div>
+                <div class="info-item">
+                  <small>População</small>
+                  <p class="mb-0">${population}</p>
+                </div>
+                <div class="info-item">
+                  <small>Idioma</small>
+                  <p class="mb-0 text-truncate" title="${language}">${language}</p>
+                </div>
+                <div class="info-item">
+                  <small>Moeda</small>
+                  <p class="mb-0 text-truncate" title="${currency}">${currency}</p>
+                </div>
+              </div>
+              
+              <a href="country.html?name=${encodeURIComponent(countryName)}" 
+                 class="btn btn-primary w-100 btn-hover-shadow">
+                <i class="fas fa-map-marker-alt me-2"></i>Explorar
+              </a>
+            </div>
           </div>
         </div>
-      </div>
-    `;
+      `;
+      } catch (error) {
+        console.error("Erro ao processar país:", country, error);
+        return ""; // Retorna string vazia se houver erro
+      }
     })
+    .filter((html) => html !== "") // Remove entradas vazias
     .join("");
 
-  countriesGrid.innerHTML = html;
+  if (html) {
+    countriesGrid.innerHTML = html;
+  } else {
+    countriesGrid.innerHTML = `
+      <div class="col-12">
+        <div class="alert alert-warning text-center" role="alert">
+          <i class="fas fa-exclamation-triangle me-2"></i>Erro ao carregar os países. Tente novamente.
+        </div>
+      </div>`;
+  }
 }
 
 /**
@@ -893,28 +922,51 @@ document.addEventListener("DOMContentLoaded", () => {
   animateOnScroll();
 });
 
-
-
 // Animações de rolagem
-document.addEventListener('DOMContentLoaded', () => {
-  const animatedSections = document.querySelectorAll('.section-animate');
+document.addEventListener("DOMContentLoaded", () => {
+  const animatedSections = document.querySelectorAll(".section-animate");
 
-  const observer = new IntersectionObserver(entries => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add('is-visible');
-      } else {
-        // Opcional: remover a classe se sair da tela para reanimar ao rolar de volta
-        // entry.target.classList.remove('is-visible');
-      }
-    });
-  }, {
-    threshold: 0.1 // A seção se torna visível quando 10% dela está no viewport
-  });
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("is-visible");
+        } else {
+          // Opcional: remover a classe se sair da tela para reanimar ao rolar de volta
+          // entry.target.classList.remove('is-visible');
+        }
+      });
+    },
+    {
+      threshold: 0.1, // A seção se torna visível quando 10% dela está no viewport
+    }
+  );
 
-  animatedSections.forEach(section => {
+  animatedSections.forEach((section) => {
     observer.observe(section);
   });
+
+  // Inicialização automática para páginas específicas
+  const currentPage = window.location.pathname.split("/").pop();
+
+  // Se estiver na página places.html, carrega os países automaticamente
+  if (currentPage === "places.html" && countriesGrid) {
+    // Verifica se há um termo de busca na URL
+    const searchTerm = getSearchTermFromUrl();
+    if (searchTerm) {
+      // Se há termo de busca, executa a busca
+      if (searchCountryInput) {
+        searchCountryInput.value = searchTerm;
+      }
+      searchCountries(searchTerm);
+    } else {
+      // Se não há termo de busca, carrega todos os países
+      getAllCountries();
+    }
+  }
+
+  // Se estiver na página country.html, carrega os detalhes do país
+  if (currentPage === "country.html") {
+    displayCountryDetails();
+  }
 });
-
-
