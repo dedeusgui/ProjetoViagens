@@ -121,7 +121,7 @@ a {
 
 a:hover {
   color: var(--primary-hover);
-  text-decoration: underline;
+  text-decoration: none;
 }
 
 /* =============================================================================
@@ -167,6 +167,13 @@ header {
 .navbar-nav .nav-link.active {
   color: var(--primary-color) !important;
   background-color: rgba(37, 99, 235, 0.1);
+}
+.navbar-brand:focus,
+.navbar-brand:active,
+.navbar-nav .nav-link:focus,
+.navbar-nav .nav-link:active {
+  outline: none !important;
+  box-shadow: none !important;
 }
 
 /* =============================================================================
