@@ -570,8 +570,6 @@ header.scrolled {
   box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
 }
 
-.country-card::before {
-}
 .country-flag-img {
   width: 100%;
   height: 220px;
@@ -1243,7 +1241,6 @@ footer a:hover {
 }
 
 .featured-country-card:hover .featured-flag-img {
-  transform: scale(1.1);
   filter: brightness(1.2);
 }
 
