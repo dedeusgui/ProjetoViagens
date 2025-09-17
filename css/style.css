@@ -200,11 +200,12 @@ header.scrolled {
 
 .navbar-brand img {
   transition: var(--transition-bounce);
+  height: 65px;
   filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
 }
 
 .navbar-brand:hover img {
-  transform: rotate(-5deg) scale(1.1);
+  transform: scale(1.1);
   filter: drop-shadow(0 4px 8px rgba(37, 99, 235, 0.3));
 }
 
@@ -395,7 +396,7 @@ header.scrolled {
   position: relative;
 }
 
-.card::before {
+.card:not(.country-card)::before {
   content: "";
   position: absolute;
   top: 0;
@@ -569,6 +570,8 @@ header.scrolled {
   box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
 }
 
+.country-card::before {
+}
 .country-flag-img {
   width: 100%;
   height: 220px;
