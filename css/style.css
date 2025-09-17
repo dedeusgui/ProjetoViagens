@@ -3,6 +3,8 @@
    =============================================================================
 */
 
+@import url("https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600&family=Montserrat:wght@600;700;800&display=swap");
+
 /* =============================================================================
    VARIÁVEIS E ROOT
    ============================================================================= */
@@ -62,8 +64,9 @@
   box-sizing: border-box;
 }
 
+/* Fonte base do corpo: Barlow (mais leve e acessível) */
 body {
-  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+  font-family: "Barlow", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
     Oxygen, Ubuntu, Cantarell, sans-serif;
   line-height: 1.6;
   color: var(--gray-700);
@@ -74,12 +77,15 @@ body {
 /* =============================================================================
    TYPOGRAFIA
    ============================================================================= */
+
+/* Títulos: Montserrat (impacto moderno e confiança) */
 h1,
 h2,
 h3,
 h4,
 h5,
 h6 {
+  font-family: "Montserrat", sans-serif;
   font-weight: 700;
   line-height: 1.3;
   margin-bottom: var(--spacing-md);
@@ -147,7 +153,18 @@ header {
   display: flex;
   align-items: center;
 }
-
+.navbar-brand,
+.navbar-nav .nav-link,
+.btn {
+  font-family: "Montserrat", sans-serif;
+  font-weight: 600;
+}
+p,
+.card-text,
+.country-info-grid p {
+  font-family: "Barlow", sans-serif;
+  color: var(--gray-600);
+}
 .navbar-brand img {
   transition: var(--transition-fast);
 }
@@ -171,11 +188,11 @@ header {
     order: -1;
     margin-bottom: 1rem;
   }
-  
+
   .navbar-brand:first-child {
     display: none;
   }
-  
+
   .navbar .d-flex.ms-auto {
     width: 100%;
     justify-content: center;
@@ -188,7 +205,7 @@ header {
     align-items: stretch;
     gap: 0.5rem;
   }
-  
+
   .navbar .form-control {
     margin-right: 0 !important;
   }
@@ -470,17 +487,17 @@ header {
   .country-flag-img {
     height: 150px;
   }
-  
+
   .card-body {
     padding: 1rem;
   }
-  
+
   .country-info-grid {
     grid-template-columns: 1fr;
     gap: 0.5rem;
     padding: 0.75rem;
   }
-  
+
   .country-badge {
     font-size: 0.7rem;
     padding: 4px 8px;
@@ -491,11 +508,11 @@ header {
   .country-flag-img {
     height: 120px;
   }
-  
+
   .card-title {
     font-size: 1.1rem;
   }
-  
+
   .card-body {
     padding: 0.75rem;
   }
@@ -848,7 +865,6 @@ footer a:hover {
   background: var(--primary-hover);
 }
 
-
 /* Efeitos de Hover para Botões */
 .btn-hover-scale:hover {
   transform: scale(1.05);
@@ -860,9 +876,6 @@ footer a:hover {
   transition: box-shadow 0.3s ease;
 }
 
-
-
-
 /* Efeitos de Hover para Botões */
 .btn-hover-scale:hover {
   transform: scale(1.05);
@@ -873,10 +886,6 @@ footer a:hover {
   box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
   transition: box-shadow 0.3s ease;
 }
-
-
-
-
 
 /* Animações de Entrada para Seções */
 .section-animate {
@@ -890,9 +899,6 @@ footer a:hover {
   transform: translateY(0);
 }
 
-
-
-
 /* Efeitos de Hover para Cards */
 .card-hover-lift:hover {
   transform: translateY(-10px);
@@ -904,10 +910,6 @@ footer a:hover {
   border-color: var(--primary-color) !important;
   transition: border-color 0.3s ease;
 }
-
-
-
-
 
 /* =============================================================================
    LAYOUT GERAL E RESPONSIVIDADE
@@ -997,5 +999,3 @@ footer {
     font-size: 0.9rem;
   }
 }
-
-
