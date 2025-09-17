@@ -195,7 +195,7 @@ function displayCountriesGrid(countries) {
 
       return `
       <div class="col">
-        <div class="card country-card h-100 shadow-sm border-0">
+        <div class="card country-card h-100 shadow-sm border-0 card-hover-lift card-hover-border">
           <!-- Bandeira maior sem overlay -->
           <div class="position-relative">
             <img src="${country.flags.svg}" 
@@ -892,3 +892,29 @@ document.addEventListener("DOMContentLoaded", () => {
   enhanceAccessibility();
   animateOnScroll();
 });
+
+
+
+// Animações de rolagem
+document.addEventListener('DOMContentLoaded', () => {
+  const animatedSections = document.querySelectorAll('.section-animate');
+
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('is-visible');
+      } else {
+        // Opcional: remover a classe se sair da tela para reanimar ao rolar de volta
+        // entry.target.classList.remove('is-visible');
+      }
+    });
+  }, {
+    threshold: 0.1 // A seção se torna visível quando 10% dela está no viewport
+  });
+
+  animatedSections.forEach(section => {
+    observer.observe(section);
+  });
+});
+
+

@@ -772,3 +772,62 @@ footer a:hover {
 ::-webkit-scrollbar-thumb:hover {
   background: var(--primary-hover);
 }
+
+
+/* Efeitos de Hover para Botões */
+.btn-hover-scale:hover {
+  transform: scale(1.05);
+  transition: transform 0.3s ease;
+}
+
+.btn-hover-shadow:hover {
+  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+  transition: box-shadow 0.3s ease;
+}
+
+
+
+
+/* Efeitos de Hover para Botões */
+.btn-hover-scale:hover {
+  transform: scale(1.05);
+  transition: transform 0.3s ease;
+}
+
+.btn-hover-shadow:hover {
+  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+  transition: box-shadow 0.3s ease;
+}
+
+
+
+
+
+/* Animações de Entrada para Seções */
+.section-animate {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+}
+
+.section-animate.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+
+
+
+/* Efeitos de Hover para Cards */
+.card-hover-lift:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+  transition: all 0.3s ease;
+}
+
+.card-hover-border:hover {
+  border-color: var(--primary-color) !important;
+  transition: border-color 0.3s ease;
+}
+
+
