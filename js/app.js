@@ -110,8 +110,10 @@ function sortCountriesInPlace(array) {
  */
 async function getAllCountries() {
   if (!countriesGrid) {
+    console.warn("Elemento countries-grid não encontrado");
     return;
   }
+  
   // acessibilidade: indica que a região está ocupada
   countriesGrid.setAttribute("aria-busy", "true");
 
@@ -123,6 +125,11 @@ async function getAllCountries() {
       "https://restcountries.com/v3.1/all?fields=name,flags,capital,population,continents,languages,currencies";
     const data = await fetchAPI(url);
 
+    // Verificar se os dados foram recebidos corretamente
+    if (!data || !Array.isArray(data) || data.length === 0) {
+      throw new Error("Dados de países não recebidos ou inválidos");
+    }
+
     // ordena in-place para máxima performance e evita cópias desnecessárias
     sortCountriesInPlace(data);
 
@@ -131,6 +138,8 @@ async function getAllCountries() {
 
     // exibe (agora já ordenado)
     displayCountriesGrid(allCountriesData);
+    
+    console.log(`Carregados ${data.length} países com sucesso`);
   } catch (error) {
     console.error("Ocorreu um erro ao buscar os países:", error);
     countriesGrid.innerHTML = `<div class="alert alert-danger w-100" role="alert">Não foi possível carregar os países. Por favor, tente novamente mais tarde.</div>`;
@@ -144,7 +153,11 @@ async function getAllCountries() {
  * @param {string} region - O nome da região (por exemplo, 'americas').
  */
 async function getCountriesByRegion(region) {
-  if (!countriesGrid) return;
+  if (!countriesGrid) {
+    console.warn("Elemento countries-grid não encontrado");
+    return;
+  }
+  
   countriesGrid.setAttribute("aria-busy", "true");
 
   try {
@@ -153,11 +166,18 @@ async function getCountriesByRegion(region) {
     const url = `https://restcountries.com/v3.1/region/${region}?fields=name,flags,capital,population,continents,languages,currencies`;
     const data = await fetchAPI(url);
 
+    // Verificar se os dados foram recebidos corretamente
+    if (!data || !Array.isArray(data) || data.length === 0) {
+      throw new Error("Dados de países da região não recebidos ou inválidos");
+    }
+
     // ordena in-place e guarda
     sortCountriesInPlace(data);
     allCountriesData = data;
 
     displayCountriesGrid(data);
+    
+    console.log(`Carregados ${data.length} países da região ${region} com sucesso`);
   } catch (error) {
     console.error("Ocorreu um erro ao buscar por região:", error);
     countriesGrid.innerHTML = `<div class="alert alert-danger w-100" role="alert">Não foi possível carregar os países do continente.</div>`;
@@ -276,10 +296,6 @@ function displayCountriesGrid(countries) {
   }
 }
 
-/**
- * Função que filtra e exibe os países com base no texto de busca.
- * @param {string} searchTerm - Termo de busca opcional
- */
 /**
  * Função que filtra e exibe os países com base no texto de busca.
  * @param {string} searchTerm - Termo de busca opcional
@@ -494,11 +510,9 @@ async function displayCountryDetails() {
     const countryData = await getCountryData(countryName);
 
     if (!countryData) {
-      container.innerHTML = `<div class="alert alert-danger w-100">País não encontrado.</div>`;
-      return;
+      throw new Error("Dados do país não encontrados");
     }
 
-    // Buscar clima e imagem em paralelo
     const [weatherData, imageUrl] = await Promise.all([
       countryData.latlng
         ? getWeather(countryData.latlng[0], countryData.latlng[1])
@@ -644,34 +658,6 @@ async function displayCountryDetails() {
     `;
   }
 }
-
-// ----------------------------------------------------------------------
-// Inicialização
-// ----------------------------------------------------------------------
-
-document.addEventListener("DOMContentLoaded", () => {
-  // Adicione esta nova condição para a página intro.html
-  if (window.location.pathname.includes("intro.html")) {
-    displayFeaturedCountries();
-  }
-
-  if (window.location.pathname.includes("places.html")) {
-    // ... (o código existente para places.html permanece aqui)
-    const searchTerm = getSearchTermFromUrl();
-    if (searchTerm) {
-      if (searchCountryInput) {
-        searchCountryInput.value = decodeURIComponent(searchTerm);
-      }
-      searchCountries(decodeURIComponent(searchTerm));
-    } else {
-      getAllCountries();
-    }
-  }
-
-  if (window.location.pathname.includes("country.html")) {
-    displayCountryDetails();
-  }
-});
 
 /**
  * Busca e exibe uma seleção de países em destaque.
@@ -916,57 +902,86 @@ function animateOnScroll() {
   elements.forEach((element) => observer.observe(element));
 }
 
-// Inicializar quando o DOM carregar
-document.addEventListener("DOMContentLoaded", () => {
+// Função de inicialização principal
+function initializeApp() {
+  console.log("Inicializando aplicação NoMap...");
+  
+  // Melhorar acessibilidade
   enhanceAccessibility();
+  
+  // Configurar animações
   animateOnScroll();
-});
-
-// Animações de rolagem
-document.addEventListener("DOMContentLoaded", () => {
+  
+  // Configurar animações de seções
   const animatedSections = document.querySelectorAll(".section-animate");
-
-  const observer = new IntersectionObserver(
-    (entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add("is-visible");
-        } else {
-          // Opcional: remover a classe se sair da tela para reanimar ao rolar de volta
-          // entry.target.classList.remove('is-visible');
-        }
-      });
-    },
-    {
-      threshold: 0.1, // A seção se torna visível quando 10% dela está no viewport
-    }
-  );
-
-  animatedSections.forEach((section) => {
-    observer.observe(section);
-  });
-
-  // Inicialização automática para páginas específicas
-  const currentPage = window.location.pathname.split("/").pop();
-
-  // Se estiver na página places.html, carrega os países automaticamente
-  if (currentPage === "places.html" && countriesGrid) {
-    // Verifica se há um termo de busca na URL
-    const searchTerm = getSearchTermFromUrl();
-    if (searchTerm) {
-      // Se há termo de busca, executa a busca
-      if (searchCountryInput) {
-        searchCountryInput.value = searchTerm;
+  if (animatedSections.length > 0) {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("is-visible");
+          }
+        });
+      },
+      {
+        threshold: 0.1,
       }
-      searchCountries(searchTerm);
-    } else {
-      // Se não há termo de busca, carrega todos os países
-      getAllCountries();
-    }
+    );
+
+    animatedSections.forEach((section) => {
+      observer.observe(section);
+    });
   }
 
-  // Se estiver na página country.html, carrega os detalhes do país
+  // Inicialização específica por página
+  const currentPage = window.location.pathname.split("/").pop();
+  console.log("Página atual:", currentPage);
+
+  // Página de países em destaque
+  if (currentPage === "intro.html") {
+    console.log("Carregando países em destaque...");
+    displayFeaturedCountries();
+  }
+
+  // Página de todos os países
+  if (currentPage === "places.html") {
+    console.log("Inicializando página de países...");
+    
+    // Aguardar um pouco para garantir que todos os elementos estejam carregados
+    setTimeout(() => {
+      const searchTerm = getSearchTermFromUrl();
+      if (searchTerm) {
+        console.log("Executando busca por:", searchTerm);
+        if (searchCountryInput) {
+          searchCountryInput.value = decodeURIComponent(searchTerm);
+        }
+        searchCountries(decodeURIComponent(searchTerm));
+      } else {
+        console.log("Carregando todos os países...");
+        getAllCountries();
+      }
+    }, 100);
+  }
+
+  // Página de detalhes do país
   if (currentPage === "country.html") {
+    console.log("Carregando detalhes do país...");
     displayCountryDetails();
   }
-});
+}
+
+// Inicialização quando o DOM estiver pronto
+document.addEventListener("DOMContentLoaded", initializeApp);
+
+// Fallback: se por algum motivo o DOMContentLoaded não disparar
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", initializeApp);
+} else {
+  // DOM já está carregado
+  initializeApp();
+}
+
+// Expor funções globalmente para debug
+window.getAllCountries = getAllCountries;
+window.allCountriesData = allCountriesData;
+window.displayCountriesGrid = displayCountriesGrid;
