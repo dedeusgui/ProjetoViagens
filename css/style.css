@@ -1423,3 +1423,54 @@ footer a:hover {
   outline: 3px solid var(--primary-color);
   outline-offset: 3px;
 }
+
+.transition-card {
+  transition: all 0.3s ease;
+  cursor: default;
+}
+
+.transition-card:hover {
+  transform: translateY(-5px);
+}
+
+.card-header {
+  font-weight: 600;
+}
+
+.badge {
+  font-weight: 500;
+}
+
+.text-break {
+  word-break: break-word;
+}
+
+/* Opcional: animação suave no carregamento */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.container.py-4 > * {
+  animation: fadeInUp 0.6s ease-out forwards;
+  opacity: 0;
+}
+
+.container.py-4 > *:nth-child(1) {
+  animation-delay: 0.1s;
+}
+.container.py-4 > *:nth-child(2) {
+  animation-delay: 0.2s;
+}
+.container.py-4 > *:nth-child(3) {
+  animation-delay: 0.3s;
+}
+.container.py-4 > *:nth-child(4) {
+  animation-delay: 0.4s;
+}
