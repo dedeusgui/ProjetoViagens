@@ -11,7 +11,7 @@
 **NoMap** é uma aplicação web moderna que centraliza informações sobre países de todo o mundo, oferecendo uma experiência rica e interativa para viajantes, estudantes e entusiastas de geografia. Com design responsivo e dados atualizados em tempo real, a plataforma democratiza o acesso à informação sobre destinos globais.
 
 
-## 🧾 Jusitifcativa
+## 🧾 Justificativa
 Em um mundo cada vez mais conectado, o acesso rápido e confiável a informações geográficas, culturais e climáticas tornou-se essencial para diversos perfis de usuários — de viajantes a estudantes.
 
 Embora existam plataformas que oferecem dados sobre países, muitas delas pecam pela falta de atualização, excesso de informações dispersas ou interfaces pouco amigáveis.
