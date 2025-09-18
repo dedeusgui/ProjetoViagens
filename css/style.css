@@ -561,7 +561,7 @@ header.scrolled {
 .country-card {
   min-height: 300px; /* Ajuste conforme necessário */
   transition: all var(--transition-normal);
-  overflow: visible;
+  overflow: hidden;
   position: relative;
   cursor: pointer;
   display: flex;
