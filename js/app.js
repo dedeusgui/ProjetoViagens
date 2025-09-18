@@ -299,35 +299,74 @@ const templates = {
 
     return `
     <div class="col">
-      <div class="card country-card h-100 shadow-sm border-0 card-hover-lift card-hover-border d-flex flex-column">
-        <div class="position-relative flex-shrink-0">
-          <img src="${data.flagUrl}"
-               class="country-flag-img w-100"
-               style="height: 200px; object-fit: cover;"
-               alt="Bandeira de ${data.name}"
-               onerror="this.src='${CONFIG.defaults.placeholderFlag}'">
-          <div class="country-badge-container">
-            <span class="country-badge">${data.continent}</span>
+  <div class="card country-card h-100 shadow-sm border-0">
+    <div class="position-relative">
+      <img src="${
+        data.flagUrl
+      }" class="country-flag-img w-100" style="height: 150px; object-fit: cover;" alt="Bandeira de ${
+      data.name
+    }">
+      <div class="country-badge-container">
+        <span class="country-badge">${data.continent}</span>
+      </div>
+    </div>
+    
+    <div class="card-body p-3 d-flex flex-column">
+      <h5 class="card-title fw-bold text-primary mb-3">${data.name}</h5>
+      
+      <div class="country-info-grid-icons">
+        <div class="info-item-icon">
+          <div class="icon-wrapper bg-primary-subtle text-primary">
+            <i class="fas fa-building fa-sm"></i>
+          </div>
+          <div class="info-text">
+            <small>Capital</small>
+            <p class="mb-0 text-truncate" title="${data.capital}">${
+      data.capital
+    }</p>
           </div>
         </div>
-       
-        <div class="card-body d-flex flex-column">
-          <h5 class="card-title fw-bold text-primary mb-3">${data.name}</h5>
-         
-          <div class="country-info-grid flex-grow-1">
-            ${createInfoItem("Capital", data.capital)}
-            ${createInfoItem("População", data.population)}
-            ${createInfoItem("Idioma", data.language)}
-            ${createInfoItem("Moeda", data.currency)}
+        <div class="info-item-icon">
+          <div class="icon-wrapper bg-success-subtle text-success">
+            <i class="fas fa-users fa-sm"></i>
           </div>
-         
-          <a href="country.html?name=${encodeURIComponent(data.name)}"
-             class="btn btn-primary mt-auto w-100 btn-hover-shadow">
-            <i class="fas fa-map-marker-alt me-2"></i>Explorar
-          </a>
+          <div class="info-text">
+            <small>População</small>
+            <p class="mb-0">${data.population}</p>
+          </div>
+        </div>
+        <div class="info-item-icon">
+          <div class="icon-wrapper bg-info-subtle text-info">
+            <i class="fas fa-language fa-sm"></i>
+          </div>
+          <div class="info-text">
+            <small>Idioma</small>
+            <p class="mb-0 text-truncate" title="${data.language}">${
+      data.language
+    }</p>
+          </div>
+        </div>
+        <div class="info-item-icon">
+          <div class="icon-wrapper bg-warning-subtle text-warning">
+            <i class="fas fa-money-bill-wave fa-sm"></i>
+          </div>
+          <div class="info-text">
+            <small>Moeda</small>
+            <p class="mb-0 text-truncate" title="${data.currency}">${
+      data.currency
+    }</p>
+          </div>
         </div>
       </div>
-    </div>`;
+      
+      <a href="country.html?name=${encodeURIComponent(
+        data.name
+      )}" class="btn btn-primary mt-auto w-100 btn-sm">
+        <i class="fas fa-map-marker-alt me-1"></i>Explorar
+      </a>
+    </div>
+  </div>
+</div>`;
   },
 };
 

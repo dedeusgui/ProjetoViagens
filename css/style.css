@@ -1516,3 +1516,90 @@ footer a:hover {
 .container.py-4 > *:nth-child(4) {
   animation-delay: 0.4s;
 }
+/* --- LAYOUT BASE (garante footer no fim sem esmagar) --- */
+html,
+body {
+  height: 100%;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh; /* garante que o body sempre ocupe a viewport */
+}
+
+/* area principal que expande */
+main {
+  flex: 1 0 auto; /* cresce para ocupar espaço disponível */
+  /* opcional: dar um espaço extra antes do footer para evitar que conteúdo encoste */
+  padding-bottom: 2rem;
+}
+
+/* evita que o footer seja "esmagado" quando o espaço vertical é curto */
+footer {
+  flex-shrink: 0; /* não permite encolher */
+  min-height: 84px; /* ajuste conforme quiser (ex.: 84px = 3 * 28px) */
+  padding: 1.25rem 0; /* aumenta o espaço interno — ajuste ao gosto */
+  box-sizing: border-box;
+}
+
+/* se você estava usando margin-top (ex.: .mt-5) remova/ajuste — flex já empurra o footer */
+footer.mt-5 {
+  margin-top: 0; /* evita espaçamentos redundantes que podem dar efeito estranho */
+}
+
+/* opcional: visual para separar conteúdo do footer */
+footer {
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+.country-info-grid-icons {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
+  margin: 0.75rem 0;
+  flex-grow: 1;
+}
+
+.info-item-icon {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.icon-wrapper {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+}
+
+.info-text {
+  flex: 1;
+  min-width: 0;
+}
+
+.info-text small {
+  font-size: 0.7rem;
+  color: var(--gray-500);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.info-text p {
+  font-size: 0.85rem;
+  font-weight: 600;
+  margin-bottom: 0;
+  color: var(--gray-700);
+}
+
+.country-card .card-body {
+  padding: 0.75rem !important;
+}
+
+.country-card .btn {
+  padding: 0.5rem 1rem;
+  font-size: 0.9rem;
+}
