@@ -767,6 +767,15 @@ header.scrolled {
   border-radius: var(--border-radius-lg);
   overflow: hidden;
 }
+.vision-image i,
+.story-image i {
+  margin-right: var(--spacing-sm);
+}
+.vision-image h4,
+.story-image h4 {
+  font-size: 3em;
+  margin-top: var(--spacing-md);
+}
 
 .vision-image:hover,
 .story-image:hover {
