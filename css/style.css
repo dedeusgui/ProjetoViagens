@@ -1516,42 +1516,43 @@ footer a:hover {
 .container.py-4 > *:nth-child(4) {
   animation-delay: 0.4s;
 }
-/* --- LAYOUT BASE (garante footer no fim sem esmagar) --- */
+/* Layout base: body como coluna flex — footer empurra para baixo */
 html,
 body {
   height: 100%;
 }
-
 body {
   display: flex;
   flex-direction: column;
-  min-height: 100vh; /* garante que o body sempre ocupe a viewport */
+  min-height: 100vh;
 }
 
-/* area principal que expande */
+/* main cresce para ocupar espaço e empurrar footer */
 main {
-  flex: 1 0 auto; /* cresce para ocupar espaço disponível */
-  /* opcional: dar um espaço extra antes do footer para evitar que conteúdo encoste */
-  padding-bottom: 2rem;
+  flex: 1 0 auto;
+  padding-top: 95px;
 }
 
-/* evita que o footer seja "esmagado" quando o espaço vertical é curto */
+header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000; /* mantém acima do conteúdo */
+  width: 100%;
+}
+
+/* footer não encolhe e tem altura mínima */
 footer {
-  flex-shrink: 0; /* não permite encolher */
-  min-height: 84px; /* ajuste conforme quiser (ex.: 84px = 3 * 28px) */
-  padding: 1.25rem 0; /* aumenta o espaço interno — ajuste ao gosto */
+  flex-shrink: 0;
+  min-height: 84px; /* ajuste se quiser menor/maior */
+  padding: 1.25rem 0;
   box-sizing: border-box;
 }
 
-/* se você estava usando margin-top (ex.: .mt-5) remova/ajuste — flex já empurra o footer */
-footer.mt-5 {
-  margin-top: 0; /* evita espaçamentos redundantes que podem dar efeito estranho */
-}
+/* se você usou `.mt-5` nos footers, seu CSS já a neutraliza:
+   footer.mt-5 { margin-top: 0; } */
 
-/* opcional: visual para separar conteúdo do footer */
-footer {
-  border-top: 1px solid rgba(255, 255, 255, 0.06);
-}
 .country-info-grid-icons {
   display: grid;
   grid-template-columns: 1fr 1fr;
