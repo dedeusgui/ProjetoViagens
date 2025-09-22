@@ -220,153 +220,151 @@ const templates = {
       </div>`,
 
     hero: () => `
-      <div class="d-flex flex-column align-items-center justify-content-center w-100 p-5 my-5">
-        <div class="spinner-border text-primary" role="status" style="width: 3rem; height: 3rem;">
-          <span class="visually-hidden">Carregando...</span>
-        </div>
-        <p class="mt-3 text-muted fs-5">Descobrindo o destino perfeito...</p>
-      </div>`,
+  <div class="d-flex flex-column align-items-center justify-content-center w-100 p-5 my-5">
+    <div class="spinner-border text-primary" role="status" style="width: 3rem; height: 3rem;">
+      <span class="visually-hidden" data-translate="Carregando">Carregando...</span>
+    </div>
+    <p class="mt-3 text-muted fs-5" data-translate="Descobrindo_destino_perfeito">Descobrindo o destino perfeito...</p>
+  </div>`,
 
     featured: () => `
-      <div class="loading-hero d-flex flex-column align-items-center justify-content-center py-5">
-        <div class="loading-animation">
-          <div class="globe-loader"></div>
-        </div>
-        <h3 class="mt-4 text-primary fw-bold">Descobrindo Destinos Extraordinários</h3>
-        <p class="text-muted fs-5">Preparando experiências únicas para você...</p>
-      </div>
-      <style>
-        .globe-loader {
-          width: 60px;
-          height: 60px;
-          border: 4px solid rgba(var(--bs-primary-rgb), 0.1);
-          border-top: 4px solid var(--bs-primary);
-          border-radius: 50%;
-          animation: spin 1.5s linear infinite;
-        }
-        @keyframes spin {
-          0% { transform: rotate(0deg); }
-          100% { transform: rotate(360deg); }
-        }
-      </style>`,
+  <div class="loading-hero d-flex flex-column align-items-center justify-content-center py-5">
+    <div class="loading-animation">
+      <div class="globe-loader"></div>
+    </div>
+    <h3 class="mt-4 text-primary fw-bold" data-translate="Descobrindo_Destinos_Extraordinarios">Descobrindo Destinos Extraordinários</h3>
+    <p class="text-muted fs-5" data-translate="Preparando_experiencias_unicas">Preparando experiências únicas para você...</p>
+  </div>
+  <style>
+    .globe-loader {
+      width: 60px;
+      height: 60px;
+      border: 4px solid rgba(var(--bs-primary-rgb), 0.1);
+      border-top: 4px solid var(--bs-primary);
+      border-radius: 50%;
+      animation: spin 1.5s linear infinite;
+    }
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+  </style>`,
   },
 
   error: {
-    general: (message) => `
+    general: (keyOrMessage = "Erro_geral") => {
+      // Verifica se é uma chave conhecida ou uma mensagem fallback
+      const message =
+        headerButtons.translations[headerButtons.currentLanguage]?.[
+          keyOrMessage
+        ] || keyOrMessage;
+      return `
       <div class="alert alert-danger w-100" role="alert">
-        ${
-          message ||
-          "Não foi possível carregar os dados. Tente novamente mais tarde."
-        }
-      </div>`,
-
+        ${message}
+      </div>`;
+    },
     noResults: () => `
-      <div class="col-12">
-        <div class="alert alert-info text-center" role="alert">
-          <i class="fas fa-search me-2"></i>Nenhum país encontrado.
-        </div>
-      </div>`,
-
+    <div class="col-12">
+      <div class="alert alert-info text-center" role="alert">
+        <i class="fas fa-search me-2"></i><span data-translate="Nenhum_pais_encontrado">Nenhum país encontrado.</span>
+      </div>
+    </div>`,
     featured: () => `
-      <div class="col-12">
-        <div class="premium-error-card text-center p-5 rounded-4">
-          <div class="error-icon mb-4">
-            <i class="fas fa-globe-americas fa-4x text-muted opacity-50"></i>
-          </div>
-          <h3 class="text-dark mb-3">Ops! Algo deu errado</h3>
-          <p class="text-muted mb-4 fs-5">Não conseguimos carregar os destinos em destaque no momento.</p>
-          <div class="d-flex gap-3 justify-content-center flex-wrap">
-            <button class="btn btn-primary btn-lg rounded-pill px-4" onclick="featured.display()">
-              <i class="fas fa-redo-alt me-2"></i>Tentar Novamente
-            </button>
-            <a href="places.html" class="btn btn-outline-primary btn-lg rounded-pill px-4">
-              <i class="fas fa-globe me-2"></i>Ver Todos os Países
-            </a>
-          </div>
+    <div class="col-12">
+      <div class="premium-error-card text-center p-5 rounded-4">
+        <div class="error-icon mb-4">
+          <i class="fas fa-globe-americas fa-4x text-muted opacity-50"></i>
+        </div>
+        <h3 class="text-dark mb-3" data-translate="Ops_algo_deu_errado">Ops! Algo deu errado</h3>
+        <p class="text-muted mb-4 fs-5" data-translate="Nao_conseguimos_carregar_os_destinos_em_destaque">Não conseguimos carregar os destinos em destaque no momento.</p>
+        <div class="d-flex gap-3 justify-content-center flex-wrap">
+          <button class="btn btn-primary btn-lg rounded-pill px-4" onclick="featured.display()">
+            <i class="fas fa-redo-alt me-2"></i><span data-translate="Tentar_Novamente">Tentar Novamente</span>
+          </button>
+          <a href="places.html" class="btn btn-outline-primary btn-lg rounded-pill px-4">
+            <i class="fas fa-globe me-2"></i><span data-translate="Ver_Todos_os_Paises">Ver Todos os Países</span>
+          </a>
         </div>
       </div>
-      <style>
-        .premium-error-card {
-          background: linear-gradient(145deg, #ffffff 0%, #f8fafc 100%);
-          box-shadow: 0 20px 60px rgba(0,0,0,0.08);
-          border: 1px solid #e2e8f0;
-        }
-      </style>`,
+    </div>
+    <style>
+      .premium-error-card {
+        background: linear-gradient(145deg, #ffffff 0%, #f8fafc 100%);
+        box-shadow: 0 20px 60px rgba(0,0,0,0.08);
+        border: 1px solid #e2e8f0;
+      }
+    </style>`,
   },
 
   countryCard: (country) => {
     const data = extractCountryData(country);
-
     return `
-    <div class="col">
-  <div class="card country-card h-100 shadow-sm border-0">
-    <div class="position-relative">
-      <img src="${
-        data.flagUrl
-      }" class="country-flag-img w-100" style="height: 150px; object-fit: cover;" alt="Bandeira de ${
+  <div class="col">
+    <div class="card country-card h-100 shadow-sm border-0">
+      <div class="position-relative">
+        <img src="${
+          data.flagUrl
+        }" class="country-flag-img w-100" style="height: 150px; object-fit: cover;" alt="Bandeira de ${
       data.name
     }">
-      <div class="country-badge-container">
-        <span class="country-badge">${data.continent}</span>
+        <div class="country-badge-container">
+          <span class="country-badge">${data.continent}</span>
+        </div>
       </div>
-    </div>
-    
-    <div class="card-body p-3 d-flex flex-column">
-      <h5 class="card-title fw-bold text-primary mb-3">${data.name}</h5>
-      
-      <div class="country-info-grid-icons">
-        <div class="info-item-icon">
-          <div class="icon-wrapper bg-primary-subtle text-primary">
-            <i class="fas fa-building fa-sm"></i>
-          </div>
-          <div class="info-text">
-            <small>Capital</small>
-            <p class="mb-0 text-truncate" title="${data.capital}">${
+      <div class="card-body p-3 d-flex flex-column">
+        <h5 class="card-title fw-bold text-primary mb-3">${data.name}</h5>
+        <div class="country-info-grid-icons">
+          <div class="info-item-icon">
+            <div class="icon-wrapper bg-primary-subtle text-primary">
+              <i class="fas fa-building fa-sm"></i>
+            </div>
+            <div class="info-text">
+              <small data-translate="Capital">Capital</small>
+              <p class="mb-0 text-truncate" title="${data.capital}">${
       data.capital
     }</p>
+            </div>
           </div>
-        </div>
-        <div class="info-item-icon">
-          <div class="icon-wrapper bg-success-subtle text-success">
-            <i class="fas fa-users fa-sm"></i>
+          <div class="info-item-icon">
+            <div class="icon-wrapper bg-success-subtle text-success">
+              <i class="fas fa-users fa-sm"></i>
+            </div>
+            <div class="info-text">
+              <small data-translate="Populacao">População</small>
+              <p class="mb-0">${data.population}</p>
+            </div>
           </div>
-          <div class="info-text">
-            <small>População</small>
-            <p class="mb-0">${data.population}</p>
-          </div>
-        </div>
-        <div class="info-item-icon">
-          <div class="icon-wrapper bg-info-subtle text-info">
-            <i class="fas fa-language fa-sm"></i>
-          </div>
-          <div class="info-text">
-            <small>Idioma</small>
-            <p class="mb-0 text-truncate" title="${data.language}">${
+          <div class="info-item-icon">
+            <div class="icon-wrapper bg-info-subtle text-info">
+              <i class="fas fa-language fa-sm"></i>
+            </div>
+            <div class="info-text">
+              <small data-translate="Idioma">Idioma</small>
+              <p class="mb-0 text-truncate" title="${data.language}">${
       data.language
     }</p>
+            </div>
           </div>
-        </div>
-        <div class="info-item-icon">
-          <div class="icon-wrapper bg-warning-subtle text-warning">
-            <i class="fas fa-money-bill-wave fa-sm"></i>
-          </div>
-          <div class="info-text">
-            <small>Moeda</small>
-            <p class="mb-0 text-truncate" title="${data.currency}">${
+          <div class="info-item-icon">
+            <div class="icon-wrapper bg-warning-subtle text-warning">
+              <i class="fas fa-money-bill-wave fa-sm"></i>
+            </div>
+            <div class="info-text">
+              <small data-translate="Moeda">Moeda</small>
+              <p class="mb-0 text-truncate" title="${data.currency}">${
       data.currency
     }</p>
+            </div>
           </div>
         </div>
+        <a href="country.html?name=${encodeURIComponent(
+          data.name
+        )}" class="btn btn-primary mt-auto w-100 btn-sm">
+          <i class="fas fa-map-marker-alt me-1"></i><span data-translate="Explorar">Explorar</span>
+        </a>
       </div>
-      
-      <a href="country.html?name=${encodeURIComponent(
-        data.name
-      )}" class="btn btn-primary mt-auto w-100 btn-sm">
-        <i class="fas fa-map-marker-alt me-1"></i>Explorar
-      </a>
     </div>
-  </div>
-</div>`;
+  </div>`;
   },
 };
 
@@ -452,16 +450,15 @@ const countries = {
       dom.setLoading(countriesGrid, false);
     }
   },
-
   display(countriesList) {
     const { countriesGrid } = dom.elements;
     if (!countriesGrid) return;
-
     if (!countriesList?.length) {
       countriesGrid.innerHTML = templates.error.noResults();
+      // Traduzir a mensagem de "nenhum país encontrado"
+      headerButtons.translateElement(countriesGrid);
       return;
     }
-
     const html = countriesList
       .map((country) => {
         try {
@@ -473,9 +470,11 @@ const countries = {
       })
       .filter(Boolean)
       .join("");
-
     countriesGrid.innerHTML =
       html || templates.error.general("Erro ao carregar os países");
+
+    // --- NOVO: Traduzir os cards recém-criados ---
+    headerButtons.translateElement(countriesGrid);
   },
 
   async search(searchTerm = null) {
@@ -540,6 +539,7 @@ const countryDetails = {
         weatherData,
         imageUrl
       );
+      headerButtons.translateElement(container);
       countryDetails.addInteractions();
     } catch (error) {
       console.error("Erro ao carregar detalhes:", error);
@@ -643,129 +643,124 @@ const countryDetails = {
 
   buildInfoCard(data) {
     const items = [
-      { icon: "fa-globe", label: "Continente", value: data.continent },
-      { icon: "fa-map-marker-alt", label: "Região", value: data.region },
-      { icon: "fa-building", label: "Capital", value: data.capital },
-      { icon: "fa-users", label: "População", value: data.population },
-      { icon: "fa-ruler-combined", label: "Área", value: data.area },
-      { icon: "fa-language", label: "Idioma", value: data.language },
-      { icon: "fa-money-bill-wave", label: "Moeda", value: data.currency },
-      { icon: "fa-clock", label: "Fuso Horário", value: data.timezone },
+      { icon: "fa-globe", labelKey: "Continente", value: data.continent },
+      { icon: "fa-map-marker-alt", labelKey: "Regiao", value: data.region },
+      { icon: "fa-building", labelKey: "Capital", value: data.capital },
+      { icon: "fa-users", labelKey: "Populacao", value: data.population },
+      { icon: "fa-ruler-combined", labelKey: "Area", value: data.area },
+      { icon: "fa-language", labelKey: "Idioma", value: data.language },
+      { icon: "fa-money-bill-wave", labelKey: "Moeda", value: data.currency },
+      { icon: "fa-clock", labelKey: "Fuso_Horario", value: data.timezone },
       {
         icon: "fa-flag-checkered",
-        label: "Independente",
+        labelKey: "Independente",
         value: data.independent,
       },
     ];
-
     return `
-      <div class="col-lg-4 col-md-6">
-        <div class="card h-100 shadow-sm border-0 rounded-4 transition-card">
-          <div class="card-header bg-primary text-white py-3">
-            <h5 class="mb-0"><i class="fas fa-info-circle me-2"></i>Informações Essenciais</h5>
-          </div>
-          <div class="card-body">
-            <ul class="list-unstyled">
-              ${items
-                .map(
-                  (item) => `
-                <li class="mb-3">
-                  <strong><i class="fas ${item.icon} me-2 text-muted"></i>${item.label}:</strong> ${item.value}
-                </li>
-              `
-                )
-                .join("")}
-            </ul>
-          </div>
+    <div class="col-lg-4 col-md-6">
+      <div class="card h-100 shadow-sm border-0 rounded-4 transition-card">
+        <div class="card-header bg-primary text-white py-3">
+          <h5 class="mb-0"><i class="fas fa-info-circle me-2"></i><span data-translate="Informacoes_Essenciais">Informações Essenciais</span></h5>
         </div>
-      </div>`;
+        <div class="card-body">
+          <ul class="list-unstyled">
+            ${items
+              .map(
+                (item) => `
+              <li class="mb-3">
+                <strong><i class="fas ${item.icon} me-2 text-muted"></i><span data-translate="${item.labelKey}">${item.labelKey}</span>:</strong> ${item.value}
+              </li>
+            `
+              )
+              .join("")}
+          </ul>
+        </div>
+      </div>
+    </div>`;
   },
 
   buildWeatherCard(weatherData) {
     const content = weatherData
       ? `
-      <div class="text-center mb-4">
-        <div class="display-5 fw-bold text-warning">${Math.round(
-          weatherData.main.temp
-        )}°C</div>
-        <p class="text-muted text-capitalize mb-1">${
-          weatherData.weather[0].description
-        }</p>
-        <img src="https://openweathermap.org/img/wn/${
-          weatherData.weather[0].icon
-        }@2x.png"
-             alt="Ícone do clima" class="img-fluid" style="max-height: 80px;">
+    <div class="text-center mb-4">
+      <div class="display-5 fw-bold text-warning">${Math.round(
+        weatherData.main.temp
+      )}°C</div>
+      <p class="text-muted text-capitalize mb-1">${
+        weatherData.weather[0].description
+      }</p>
+      <img src="https://openweathermap.org/img/wn/${
+        weatherData.weather[0].icon
+      }@2x.png"
+           alt="Ícone do clima" class="img-fluid" style="max-height: 80px;">
+    </div>
+    <div class="row text-center g-3">
+      <div class="col-6">
+        <div class="small text-muted" data-translate="Sensacao">Sensação</div>
+        <div class="fw-bold">${Math.round(weatherData.main.feels_like)}°C</div>
       </div>
-      <div class="row text-center g-3">
-        <div class="col-6">
-          <div class="small text-muted">Sensação</div>
-          <div class="fw-bold">${Math.round(
-            weatherData.main.feels_like
-          )}°C</div>
-        </div>
-        <div class="col-6">
-          <div class="small text-muted">Umidade</div>
-          <div class="fw-bold">${weatherData.main.humidity}%</div>
-        </div>
-        <div class="col-6">
-          <div class="small text-muted">Mínima</div>
-          <div class="fw-bold">${Math.round(weatherData.main.temp_min)}°C</div>
-        </div>
-        <div class="col-6">
-          <div class="small text-muted">Máxima</div>
-          <div class="fw-bold">${Math.round(weatherData.main.temp_max)}°C</div>
-        </div>
+      <div class="col-6">
+        <div class="small text-muted" data-translate="Umidade">Umidade</div>
+        <div class="fw-bold">${weatherData.main.humidity}%</div>
       </div>
-    `
+      <div class="col-6">
+        <div class="small text-muted" data-translate="Minima">Mínima</div>
+        <div class="fw-bold">${Math.round(weatherData.main.temp_min)}°C</div>
+      </div>
+      <div class="col-6">
+        <div class="small text-muted" data-translate="Maxima">Máxima</div>
+        <div class="fw-bold">${Math.round(weatherData.main.temp_max)}°C</div>
+      </div>
+    </div>
+  `
       : `
-      <div class="text-center py-5">
-        <i class="fas fa-cloud-sun fa-3x text-secondary opacity-50 mb-3"></i>
-        <p class="text-muted">Dados climáticos indisponíveis para este local.</p>
-      </div>
-    `;
-
+    <div class="text-center py-5">
+      <i class="fas fa-cloud-sun fa-3x text-secondary opacity-50 mb-3"></i>
+      <p class="text-muted" data-translate="Dados_climaticos_indisponiveis">Dados climáticos indisponíveis para este local.</p>
+    </div>
+  `;
     return `
-      <div class="col-lg-4 col-md-6">
-        <div class="card h-100 shadow-sm border-0 rounded-4 transition-card">
-          <div class="card-header bg-success text-white py-3">
-            <h5 class="mb-0"><i class="fas fa-cloud-sun me-2"></i>Clima Atual</h5>
-          </div>
-          <div class="card-body d-flex flex-column justify-content-center">
-            ${content}
-          </div>
+    <div class="col-lg-4 col-md-6">
+      <div class="card h-100 shadow-sm border-0 rounded-4 transition-card">
+        <div class="card-header bg-success text-white py-3">
+          <h5 class="mb-0"><i class="fas fa-cloud-sun me-2"></i><span data-translate="Clima_Atual">Clima Atual</span></h5>
         </div>
-      </div>`;
+        <div class="card-body d-flex flex-column justify-content-center">
+          ${content}
+        </div>
+      </div>
+    </div>`;
   },
 
   buildBordersCard(data, countryData) {
     return `
-      <div class="col-lg-4 col-md-12">
-        <div class="card h-100 shadow-sm border-0 rounded-4 transition-card">
-          <div class="card-header bg-warning text-white py-3">
-            <h5 class="mb-0"><i class="fas fa-border-all me-2"></i>Fronteiras & Geopolítica</h5>
-          </div>
-          <div class="card-body">
-            <ul class="list-unstyled">
-              <li class="mb-3">
-                <strong><i class="fas fa-globe-americas me-2 text-muted"></i>Países Vizinhos:</strong><br>
-                <span class="text-break">${data.borders}</span>
-              </li>
-              <li class="mb-3">
-                <strong><i class="fas fa-passport me-2 text-muted"></i>Código Telefônico:</strong> ${data.phoneCode}
-              </li>
-              <li class="mb-3">
-                <strong><i class="fas fa-tachometer-alt me-2 text-muted"></i>Domínio de Internet:</strong> ${data.internetDomain}
-              </li>
-              <li class="mb-3">
-                <strong><i class="fas fa-building-columns me-2 text-muted"></i>Nome Nativo:</strong><br>
-                <span class="text-break">${data.nativeNames}</span>
-              </li>
-            </ul>
-          </div>
+    <div class="col-lg-4 col-md-12">
+      <div class="card h-100 shadow-sm border-0 rounded-4 transition-card">
+        <div class="card-header bg-warning text-white py-3">
+          <h5 class="mb-0"><i class="fas fa-border-all me-2"></i><span data-translate="Fronteiras_e_Geopolitica">Fronteiras & Geopolítica</span></h5>
         </div>
-      </div>`;
+        <div class="card-body">
+          <ul class="list-unstyled">
+            <li class="mb-3">
+              <strong><i class="fas fa-globe-americas me-2 text-muted"></i><span data-translate="Paises_Vizinhos">Países Vizinhos</span>:</strong><br>
+              <span class="text-break">${data.borders}</span>
+            </li>
+            <li class="mb-3">
+              <strong><i class="fas fa-passport me-2 text-muted"></i><span data-translate="Codigo_Telefonico">Código Telefônico</span>:</strong> ${data.phoneCode}
+            </li>
+            <li class="mb-3">
+              <strong><i class="fas fa-tachometer-alt me-2 text-muted"></i><span data-translate="Dominio_de_Internet">Domínio de Internet</span>:</strong> ${data.internetDomain}
+            </li>
+            <li class="mb-3">
+              <strong><i class="fas fa-building-columns me-2 text-muted"></i><span data-translate="Nome_Nativo">Nome Nativo</span>:</strong><br>
+              <span class="text-break">${data.nativeNames}</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>`;
   },
-
   buildHeroImage(imageUrl, countryData, data) {
     return `
       <div class="row mb-5">
@@ -884,6 +879,7 @@ const featured = {
       container.innerHTML = `<style>${featured.getStyles()}</style><div class="row">${featured.buildHTML(
         enhancedCountries
       )}</div>`;
+      headerButtons.translateElement(container);
     } catch (error) {
       console.error("Erro ao buscar países em destaque:", error);
       container.innerHTML = templates.error.featured();
@@ -948,16 +944,12 @@ const featured = {
             </div>
           </div>
           <div class="premium-info-panel">
-            <div class="info-stats-grid">
-              ${featured.buildStatItem("fa-city", "Capital", data.capital)}
-              ${featured.buildStatItem(
-                "fa-users",
-                "População",
-                data.population
-              )}
-              ${featured.buildStatItem("fa-comments", "Idioma", data.language)}
-              ${featured.buildStatItem("fa-coins", "Moeda", data.currency)}
-            </div>
+           <div class="info-stats-grid">
+  ${featured.buildStatItem("fa-city", "Capital", data.capital)}
+  ${featured.buildStatItem("fa-users", "Populacao", data.population)}
+  ${featured.buildStatItem("fa-comments", "Idioma", data.language)}
+  ${featured.buildStatItem("fa-coins", "Moeda", data.currency)}
+</div>
             <a href="country.html?name=${encodeURIComponent(
               data.name
             )}" class="premium-explore-btn">
@@ -984,14 +976,14 @@ const featured = {
     image: country.image,
   }),
 
-  buildStatItem: (icon, label, value) => `
-    <div class="stat-item">
-      <div class="stat-icon"><i class="fas ${icon}"></i></div>
-      <div class="stat-content">
-        <span class="stat-label">${label}</span>
-        <span class="stat-value">${value}</span>
-      </div>
-    </div>`,
+  buildStatItem: (icon, labelKey, value) => `
+  <div class="stat-item">
+    <div class="stat-icon"><i class="fas ${icon}"></i></div>
+    <div class="stat-content">
+      <span class="stat-label" data-translate="${labelKey}">${labelKey}</span>
+      <span class="stat-value">${value}</span>
+    </div>
+  </div>`,
 
   getGradients: () => [
     "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
@@ -1291,6 +1283,100 @@ const headerButtons = {
       Titulo_Paises_em_Destaque_Secao: "Países em Destaque",
       Ver_Todos_os_Paises_Btn: "Ver Todos os Países",
       Sobre_o_NoMap_Btn: "Sobre o NoMap",
+      Nenhum_pais_encontrado: "Nenhum país encontrado.",
+      Erro_geral:
+        "Não foi possível carregar os dados. Tente novamente mais tarde.",
+      // --- TRADUÇÕES PARA CONTEÚDO DINÂMICO (CARDS, ERROS, ETC) ---
+
+      // Mensagens de Erro e Carregamento
+      Nenhum_pais_encontrado: "Nenhum país encontrado.",
+      Erro_ao_carregar_paises: "Erro ao carregar os países.",
+      Erro_ao_carregar_detalhes: "Erro ao carregar detalhes do país.",
+      Carregando: "Carregando...",
+      Descobrindo_destino_perfeito: "Descobrindo o destino perfeito...",
+      Descobrindo_Destinos_Extraordinarios:
+        "Descobrindo Destinos Extraordinários",
+      Preparando_experiencias_unicas:
+        "Preparando experiências únicas para você...",
+      Ops_algo_deu_errado: "Ops! Algo deu errado",
+      Nao_conseguimos_carregar_os_destinos_em_destaque:
+        "Não conseguimos carregar os destinos em destaque no momento.",
+      Tentar_Novamente: "Tentar Novamente",
+      Ver_Todos_os_Paises: "Ver Todos os Países",
+
+      // Labels de Informações (usados em cards e detalhes)
+      Continente: "Continente",
+      Regiao: "Região",
+      Subregiao: "Sub-região",
+      Capital: "Capital",
+      Populacao: "População",
+      Area: "Área",
+      Idioma: "Idioma",
+      Moeda: "Moeda",
+      Fuso_Horario: "Fuso Horário",
+      Independente: "Independente",
+      Clima_Atual: "Clima Atual",
+      Fronteiras_e_Geopolitica: "Fronteiras & Geopolítica",
+      Paises_Vizinhos: "Países Vizinhos",
+      Codigo_Telefonico: "Código Telefônico",
+      Dominio_de_Internet: "Domínio de Internet",
+      Nome_Nativo: "Nome Nativo",
+      Sensacao: "Sensação",
+      Umidade: "Umidade",
+      Minima: "Mínima",
+      Maxima: "Máxima",
+      Dados_climaticos_indisponiveis:
+        "Dados climáticos indisponíveis para este local.",
+
+      // Valores Booleanos e Fallbacks
+      Sim: "Sim",
+      Nao: "Não",
+      "N/A": "N/A",
+      Sem_fronteiras_terrestres: "Sem fronteiras terrestres",
+
+      // Botões e Ações
+      Explorar: "Explorar",
+      Nenhum_pais_encontrado: "Nenhum país encontrado.",
+      Erro_ao_carregar_paises: "Erro ao carregar os países.",
+      Erro_ao_carregar_detalhes: "Erro ao carregar detalhes do país.",
+      Carregando: "Carregando...",
+      Descobrindo_destino_perfeito: "Descobrindo o destino perfeito...",
+      Descobrindo_Destinos_Extraordinarios:
+        "Descobrindo Destinos Extraordinários",
+      Preparando_experiencias_unicas:
+        "Preparando experiências únicas para você...",
+      Ops_algo_deu_errado: "Ops! Algo deu errado",
+      Nao_conseguimos_carregar_os_destinos_em_destaque:
+        "Não conseguimos carregar os destinos em destaque no momento.",
+      Tentar_Novamente: "Tentar Novamente",
+      Ver_Todos_os_Paises: "Ver Todos os Países",
+      Continente: "Continente",
+      Regiao: "Região",
+      Subregiao: "Sub-região",
+      Capital: "Capital",
+      Populacao: "População",
+      Area: "Área",
+      Idioma: "Idioma",
+      Moeda: "Moeda",
+      Fuso_Horario: "Fuso Horário",
+      Independente: "Independente",
+      Clima_Atual: "Clima Atual",
+      Fronteiras_e_Geopolitica: "Fronteiras & Geopolítica",
+      Paises_Vizinhos: "Países Vizinhos",
+      Codigo_Telefonico: "Código Telefônico",
+      Dominio_de_Internet: "Domínio de Internet",
+      Nome_Nativo: "Nome Nativo",
+      Sensacao: "Sensação",
+      Umidade: "Umidade",
+      Minima: "Mínima",
+      Maxima: "Máxima",
+      Dados_climaticos_indisponiveis:
+        "Dados climáticos indisponíveis para este local.",
+      Sim: "Sim",
+      Nao: "Não",
+      "N/A": "N/A",
+      Sem_fronteiras_terrestres: "Sem fronteiras terrestres",
+      Explorar: "Explorar",
     },
     en: {
       // --- TRADUÇÕES PARA INDEX.HTML (EN) ---
@@ -1454,6 +1540,48 @@ const headerButtons = {
       Faca_Parte_da_Nossa_Historia: "Be Part of Our Story",
       Junte_se_a_milhares_de_viajantes:
         "Join thousands of travelers who have already discovered the world with NoMap",
+      Nenhum_pais_encontrado: "No countries found.",
+      Erro_geral: "Failed to load data. Please try again later.",
+      Nenhum_pais_encontrado: "No countries found.",
+      Erro_ao_carregar_paises: "Error loading countries.",
+      Erro_ao_carregar_detalhes: "Error loading country details.",
+      Carregando: "Loading...",
+      Descobrindo_destino_perfeito: "Discovering the perfect destination...",
+      Descobrindo_Destinos_Extraordinarios:
+        "Discovering Extraordinary Destinations",
+      Preparando_experiencias_unicas: "Preparing unique experiences for you...",
+      Ops_algo_deu_errado: "Oops! Something went wrong",
+      Nao_conseguimos_carregar_os_destinos_em_destaque:
+        "We couldn't load the featured destinations at the moment.",
+      Tentar_Novamente: "Try Again",
+      Ver_Todos_os_Paises: "View All Countries",
+      Continente: "Continent",
+      Regiao: "Region",
+      Subregiao: "Subregion",
+      Capital: "Capital",
+      Populacao: "Population",
+      Area: "Area",
+      Idioma: "Language",
+      Moeda: "Currency",
+      Fuso_Horario: "Timezone",
+      Independente: "Independent",
+      Clima_Atual: "Current Weather",
+      Fronteiras_e_Geopolitica: "Borders & Geopolitics",
+      Paises_Vizinhos: "Neighboring Countries",
+      Codigo_Telefonico: "Phone Code",
+      Dominio_de_Internet: "Internet Domain",
+      Nome_Nativo: "Native Name",
+      Sensacao: "Feels Like",
+      Umidade: "Humidity",
+      Minima: "Minimum",
+      Maxima: "Maximum",
+      Dados_climaticos_indisponiveis:
+        "Weather data unavailable for this location.",
+      Sim: "Yes",
+      Nao: "No",
+      "N/A": "N/A",
+      Sem_fronteiras_terrestres: "No land borders",
+      Explorar: "Explore",
     },
     es: {
       // --- TRADUÇÕES PARA INDEX.HTML (ES) ---
@@ -1620,6 +1748,50 @@ const headerButtons = {
       Titulo_Paises_em_Destaque_Secao: "Países Destacados",
       Ver_Todos_os_Paises_Btn: "Ver Todos los Países",
       Sobre_o_NoMap_Btn: "Sobre NoMap",
+      Nenhum_pais_encontrado: "No se encontraron países.",
+      Erro_geral:
+        "No se pudieron cargar los datos. Inténtalo de nuevo más tarde.",
+      Nenhum_pais_encontrado: "No se encontraron países.",
+      Erro_ao_carregar_paises: "Error al cargar los países.",
+      Erro_ao_carregar_detalhes: "Error al cargar los detalles del país.",
+      Carregando: "Cargando...",
+      Descobrindo_destino_perfeito: "Descubriendo el destino perfecto...",
+      Descobrindo_Destinos_Extraordinarios:
+        "Descubriendo Destinos Extraordinarios",
+      Preparando_experiencias_unicas:
+        "Preparando experiencias únicas para ti...",
+      Ops_algo_deu_errado: "¡Ups! Algo salió mal",
+      Nao_conseguimos_carregar_os_destinos_em_destaque:
+        "No pudimos cargar los destinos destacados en este momento.",
+      Tentar_Novamente: "Intentar de Nuevo",
+      Ver_Todos_os_Paises: "Ver Todos los Países",
+      Continente: "Continente",
+      Regiao: "Región",
+      Subregiao: "Subregión",
+      Capital: "Capital",
+      Populacao: "Población",
+      Area: "Área",
+      Idioma: "Idioma",
+      Moeda: "Moneda",
+      Fuso_Horario: "Zona Horaria",
+      Independente: "Independiente",
+      Clima_Atual: "Clima Actual",
+      Fronteiras_e_Geopolitica: "Fronteras y Geopolítica",
+      Paises_Vizinhos: "Países Vecinos",
+      Codigo_Telefonico: "Código Telefónico",
+      Dominio_de_Internet: "Dominio de Internet",
+      Nome_Nativo: "Nombre Nativo",
+      Sensacao: "Sensación",
+      Umidade: "Humedad",
+      Minima: "Mínima",
+      Maxima: "Máxima",
+      Dados_climaticos_indisponiveis:
+        "Datos climáticos no disponibles para esta ubicación.",
+      Sim: "Sí",
+      Nao: "No",
+      "N/A": "N/D",
+      Sem_fronteiras_terrestres: "Sin fronteras terrestres",
+      Explorar: "Explorar",
     },
   },
 
@@ -1691,13 +1863,28 @@ const headerButtons = {
   changeLanguage(e) {
     const selectedLanguage = e.target.value;
     headerButtons.currentLanguage = selectedLanguage;
-
-    // Aplicar idioma ao documento
     document.documentElement.lang = selectedLanguage;
     document.body.setAttribute("data-lang", selectedLanguage);
 
-    // Traduzir textos
+    // Primeiro, traduz o HTML estático
     headerButtons.translatePage(selectedLanguage);
+
+    // --- NOVO: Recarregar e retraduzir conteúdo dinâmico baseado na página atual ---
+    const currentPage = utils.getCurrentPage();
+    switch (currentPage) {
+      case "index.html":
+      case "intro.html":
+      case "":
+        countries.loadAll(); // Isso vai recarregar E traduzir os cards
+        featured.display(); // Isso vai recarregar E traduzir os destaques
+        break;
+      case "places.html":
+        countries.loadAll(); // Recarrega a lista de países
+        break;
+      case "country.html":
+        countryDetails.display(); // Recarrega os detalhes do país
+        break;
+    }
 
     // Salvar preferência
     try {
@@ -1747,6 +1934,38 @@ const headerButtons = {
           headerButtons.translations[language][key]
         ) {
           element.placeholder = headerButtons.translations[language][key];
+        }
+      });
+  },
+  // Nova função: Traduz um elemento ou todos os elementos dentro de um container
+  translateElement(container = document) {
+    const lang = headerButtons.currentLanguage;
+
+    // Traduzir elementos com data-translate
+    container.querySelectorAll("[data-translate]").forEach((element) => {
+      const key = element.getAttribute("data-translate");
+      if (
+        headerButtons.translations[lang] &&
+        headerButtons.translations[lang][key]
+      ) {
+        if (element.tagName === "INPUT" && element.type === "text") {
+          element.placeholder = headerButtons.translations[lang][key];
+        } else {
+          element.textContent = headerButtons.translations[lang][key];
+        }
+      }
+    });
+
+    // Traduzir placeholders
+    container
+      .querySelectorAll("[data-translate-placeholder]")
+      .forEach((element) => {
+        const key = element.getAttribute("data-translate-placeholder");
+        if (
+          headerButtons.translations[lang] &&
+          headerButtons.translations[lang][key]
+        ) {
+          element.placeholder = headerButtons.translations[lang][key];
         }
       });
   },

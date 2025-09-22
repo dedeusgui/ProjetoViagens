@@ -1,5 +1,5 @@
 /* =============================================================================
-   NO MAP - CSS Principal (Versão Aprimorada)
+   NO MAP - CSS Principal 
    =============================================================================
 */
 
@@ -1842,132 +1842,6 @@ footer {
     min-width: 180px;
   }
 }
-/* =============================================================================
-   MODO ESCURO
-   ============================================================================= */
-:root {
-  /* Cores claras (padrão) */
-  --bg-primary: #f8fafc;
-  --bg-secondary: #ffffff;
-  --text-primary: #334155;
-  --text-secondary: #64748b;
-  --text-muted: #94a3b8;
-  --border-color: #e2e8f0;
-  --shadow-color: rgba(0, 0, 0, 0.08);
-  --card-bg: #ffffff;
-  --header-bg: rgba(255, 255, 255, 0.95);
-}
-
-/* Tema escuro */
-body.dark-theme {
-  --bg-primary: #0f172a;
-  --bg-secondary: #1e293b;
-  --text-primary: #f1f5f9;
-  --text-secondary: #cbd5e1;
-  --text-muted: #94a3b8;
-  --border-color: #334155;
-  --shadow-color: rgba(0, 0, 0, 0.3);
-  --card-bg: #1e293b;
-  --header-bg: rgba(30, 41, 59, 0.95);
-
-  /* Cores específicas do tema escuro */
-  --gray-100: #334155;
-  --gray-200: #475569;
-  --gray-300: #64748b;
-  --gray-600: #cbd5e1;
-  --gray-700: #f1f5f9;
-  --gray-800: #f8fafc;
-  --light: #0f172a;
-  --dark: #f8fafc;
-}
-
-/* Aplicar variáveis aos elementos */
-body {
-  background-color: var(--bg-primary) !important;
-  color: var(--text-primary) !important;
-  transition: background-color 0.3s ease, color 0.3s ease;
-}
-
-.card {
-  background-color: var(--card-bg) !important;
-  color: var(--text-primary) !important;
-  border-color: var(--border-color) !important;
-}
-
-.card-body {
-  color: var(--text-primary) !important;
-}
-
-header {
-  background: var(--header-bg) !important;
-  border-bottom: 1px solid var(--border-color);
-}
-
-.navbar-brand {
-  color: var(--text-primary) !important;
-}
-
-.form-control {
-  background-color: var(--card-bg) !important;
-  border-color: var(--border-color) !important;
-  color: var(--text-primary) !important;
-}
-
-.form-control::placeholder {
-  color: var(--text-muted) !important;
-}
-
-.text-muted {
-  color: var(--text-muted) !important;
-}
-
-.dropdown-menu {
-  background: var(--header-bg) !important;
-  border-color: var(--border-color) !important;
-}
-
-.dropdown-item {
-  color: var(--text-primary) !important;
-}
-
-.dropdown-item:hover {
-  background: rgba(37, 99, 235, 0.1) !important;
-}
-
-.modal-content {
-  background-color: var(--card-bg) !important;
-  color: var(--text-primary) !important;
-}
-
-.modal-body {
-  background-color: var(--card-bg) !important;
-}
-
-.config-option {
-  background-color: var(--card-bg) !important;
-  border-color: var(--border-color) !important;
-}
-
-.hero-section {
-  background: linear-gradient(
-    135deg,
-    rgba(37, 99, 235, 0.08) 0%,
-    rgba(14, 165, 233, 0.08) 100%
-  );
-}
-
-body.dark-theme .hero-section {
-  background: linear-gradient(
-    135deg,
-    rgba(37, 99, 235, 0.15) 0%,
-    rgba(14, 165, 233, 0.15) 100%
-  );
-}
-
-/* Footer no modo escuro */
-body.dark-theme footer {
-  background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%) !important;
-}
 
 /* =============================================================================
    CONTROLE DE ANIMAÇÕES
@@ -2075,42 +1949,213 @@ body.no-animations *::after {
   font-size: 0.9rem;
   line-height: 1.4;
 }
-
 /* =============================================================================
-   TEMA ESCURO - ELEMENTOS ESPECÍFICOS
+   MODO ESCURO - VERSÃO CONSOLIDADA E FUNCIONAL
    ============================================================================= */
-body.dark-theme .explore-card {
-  background: var(--card-bg) !important;
+
+/* Define variáveis para o tema claro (padrão) */
+:root {
+  /* Cores claras (padrão) */
+  --bg-primary: #f8fafc;
+  --bg-secondary: #ffffff;
+  --text-primary: #334155;
+  --text-secondary: #64748b;
+  --text-muted: #94a3b8;
+  --border-color: #e2e8f0;
+  --shadow-color: rgba(0, 0, 0, 0.08);
+  --card-bg: #ffffff;
+  --header-bg: rgba(255, 255, 255, 0.95);
+}
+
+/* Sobrescreve variáveis para o tema escuro */
+body.dark-theme {
+  /* Fundos */
+  --bg-primary: #0f172a;
+  --bg-secondary: #1e293b;
+  --card-bg: #1e293b;
+  --header-bg: rgba(30, 41, 59, 0.95);
+
+  /* Textos */
+  --text-primary: #f1f5f9;
+  --text-secondary: #cbd5e1;
+  --text-muted: #94a3b8;
+
+  /* Bordas e sombras */
+  --border-color: #334155;
+  --shadow-color: rgba(0, 0, 0, 0.3);
+
+  /* Paleta de cores ajustada para melhor contraste no escuro */
+  --primary-color: #3b82f6;
+  --primary-hover: #60a5fa;
+  --accent-color: #38bdf8;
+  --success-color: #34d399;
+  --warning-color: #fbbf24;
+  --danger-color: #f87171;
+
+  /* Tons de cinza ajustados */
+  --gray-100: #334155;
+  --gray-200: #475569;
+  --gray-300: #64748b;
+  --gray-400: #94a3b8;
+  --gray-500: #cbd5e1;
+  --gray-600: #e2e8f0;
+  --gray-700: #f1f5f9;
+  --gray-800: #f8fafc;
+  --light: #0f172a;
+  --dark: #ffffff; /* Cor para texto em fundos muito escuros */
+
+  /* Sombras mais fortes para o tema escuro */
+  --box-shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.2);
+  --box-shadow-md: 0 6px 12px rgba(0, 0, 0, 0.3);
+  --box-shadow-lg: 0 12px 24px rgba(0, 0, 0, 0.4);
+  --box-shadow-hover: 0 16px 32px rgba(59, 130, 246, 0.2);
+}
+
+/* Aplica as variáveis globalmente */
+body {
+  background-color: var(--bg-primary) !important;
+  color: var(--text-primary) !important;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Estilos específicos para elementos no modo escuro */
+
+/* HEADER */
+body.dark-theme header {
+  background: var(--header-bg) !important;
+  backdrop-filter: blur(20px) !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25) !important;
+  border-bottom: 1px solid var(--border-color) !important;
+}
+
+body.dark-theme .navbar-brand,
+body.dark-theme .navbar-brand span {
+  color: var(--text-primary) !important;
+}
+
+body.dark-theme .navbar-nav .nav-link {
+  color: var(--text-secondary) !important;
+}
+
+body.dark-theme .navbar-nav .nav-link:hover,
+body.dark-theme .navbar-nav .nav-link.active {
+  color: var(--primary-color) !important;
+  background-color: rgba(59, 130, 246, 0.15) !important;
+}
+
+/* FORMULÁRIOS */
+body.dark-theme .form-control,
+body.dark-theme .form-select {
+  background-color: var(--card-bg) !important;
+  border-color: var(--border-color) !important;
+  color: var(--text-primary) !important;
+}
+
+body.dark-theme .form-control::placeholder {
+  color: var(--text-muted) !important;
+}
+
+/* CARDS */
+body.dark-theme .card {
+  background-color: var(--card-bg) !important;
+  color: var(--text-primary) !important;
+  border-color: var(--border-color) !important;
+  box-shadow: var(--box-shadow-md) !important;
+}
+
+body.dark-theme .card-title a {
+  color: var(--text-primary) !important;
+}
+
+body.dark-theme .card-text,
+body.dark-theme .text-muted {
+  color: var(--text-secondary) !important;
+}
+
+/* DROPDOWN */
+body.dark-theme .dropdown-menu {
+  background: var(--header-bg) !important;
   border-color: var(--border-color) !important;
 }
 
-body.dark-theme .country-card {
-  background: var(--card-bg) !important;
-  border-color: var(--border-color) !important;
+body.dark-theme .dropdown-item {
+  color: var(--text-primary) !important;
 }
 
-body.dark-theme .country-info-grid,
-body.dark-theme .country-info-grid.flex-grow-1 {
-  background: rgba(37, 99, 235, 0.1) !important;
-}
-
-body.dark-theme .alert {
-  background: var(--card-bg) !important;
-  border-color: var(--border-color) !important;
-}
-
-body.dark-theme .spinner-border {
+body.dark-theme .dropdown-item:hover {
+  background: rgba(59, 130, 246, 0.15) !important;
   color: var(--primary-color) !important;
 }
 
-/* Ajustes para badges no tema escuro */
-body.dark-theme .badge {
-  background: rgba(37, 99, 235, 0.2) !important;
+/* MODAL */
+body.dark-theme .modal-content {
+  background-color: var(--card-bg) !important;
   color: var(--text-primary) !important;
 }
 
+body.dark-theme .modal-header {
+  background: linear-gradient(
+    135deg,
+    var(--primary-color) 0%,
+    var(--accent-color) 100%
+  ) !important;
+  color: var(--white) !important;
+}
+
+body.dark-theme .config-option {
+  background-color: var(--card-bg) !important;
+  border-color: var(--border-color) !important;
+}
+
+/* HERO SECTION */
+body.dark-theme .hero-section {
+  background: linear-gradient(
+    135deg,
+    rgba(59, 130, 246, 0.15) 0%,
+    rgba(56, 189, 248, 0.15) 100%
+  ) !important;
+}
+
+/* FOOTER */
+body.dark-theme footer {
+  background: linear-gradient(
+    135deg,
+    var(--light) 0%,
+    var(--bg-secondary) 100%
+  ) !important;
+  color: var(--text-secondary) !important;
+}
+
+body.dark-theme footer a {
+  color: var(--text-secondary) !important;
+}
+
+body.dark-theme footer a:hover {
+  color: var(--white) !important;
+}
+
+/* BADGES e ELEMENTOS DE DESTAQUE */
+body.dark-theme .badge,
 body.dark-theme .country-badge {
-  background: rgba(30, 41, 59, 0.95) !important;
+  background: rgba(59, 130, 246, 0.2) !important;
   color: var(--text-primary) !important;
   border-color: var(--border-color) !important;
+}
+
+/* Seções de informação (como country-info-grid) */
+body.dark-theme .country-info-grid,
+body.dark-theme .country-info-grid.flex-grow-1 {
+  background: linear-gradient(
+    135deg,
+    rgba(59, 130, 246, 0.1) 0%,
+    rgba(56, 189, 248, 0.1) 100%
+  ) !important;
+}
+
+body.dark-theme .info-item small {
+  color: var(--text-muted) !important;
+}
+
+body.dark-theme .info-item p {
+  color: var(--text-primary) !important;
 }
