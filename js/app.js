@@ -1668,22 +1668,16 @@ const headerButtons = {
       saveBtn.addEventListener("click", headerButtons.saveSettings);
     }
   },
-
   toggleDarkMode(e) {
     const isDark = e.target.checked;
-
-    // Aplicar classe ao body com transição suave
-    document.body.style.transition =
-      "background-color 0.3s ease, color 0.3s ease";
+    // Aplicar/remover classe dark-theme
     document.body.classList.toggle("dark-theme", isDark);
-
     // Salvar preferência
     try {
       localStorage.setItem("nomap-dark-mode", isDark);
     } catch (err) {
       console.warn("Não foi possível salvar no localStorage:", err);
     }
-
     // Mostrar notificação
     headerButtons.showNotification(
       isDark ? "🌙 Modo escuro ativado" : "☀️ Modo claro ativado",
@@ -1691,7 +1685,6 @@ const headerButtons = {
         ? "Agora você pode navegar confortavelmente no escuro!"
         : "Voltando ao tema claro!"
     );
-
     console.log(`Modo escuro ${isDark ? "ativado" : "desativado"}`);
   },
 
