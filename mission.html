@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>NoMap - O que Buscamos</title>
+    <title data-translate="Titulo_Nossa_Missao">NoMap - O que Buscamos</title>
     <link
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
       rel="stylesheet"
@@ -31,17 +31,20 @@
 
         <div class="d-flex position-absolute top-50 start-50 translate-middle">
           <a class="navbar-brand d-flex align-items-center" href="index.html">
-            <span class="fs-4 fw-bold text-dark">NoMap</span>
+            <span class="fs-4 fw-bold text-dark" data-translate="Nome_Site"
+              >NoMap</span
+            >
           </a>
         </div>
 
-        <div class="d-flex ms-auto">
+        <div class="d-flex ms-auto align-items-center gap-2">
           <input
             class="form-control me-2"
             type="search"
             placeholder="Pesquisar..."
             aria-label="Pesquisar"
             id="global-search-input"
+            data-translate-placeholder="Placeholder_Pesquisar"
           />
           <button class="btn btn-primary" type="button" id="search-button">
             <svg
@@ -57,14 +60,92 @@
               />
             </svg>
           </button>
+
+          <!-- Dropdown de Navegação -->
+          <div class="dropdown">
+            <button
+              class="header-btn dropdown-toggle"
+              type="button"
+              id="navigationDropdown"
+              data-bs-toggle="dropdown"
+              aria-expanded="false"
+              title="Navegação"
+            >
+              <i class="fas fa-compass"></i>
+            </button>
+            <ul
+              class="dropdown-menu dropdown-menu-end"
+              aria-labelledby="navigationDropdown"
+            >
+              <li>
+                <a class="dropdown-item" href="index.html"
+                  ><i class="fas fa-home"></i
+                  ><span data-translate="Pagina_Inicial"
+                    >Página Inicial</span
+                  ></a
+                >
+              </li>
+              <li>
+                <a class="dropdown-item" href="intro.html"
+                  ><i class="fas fa-star"></i
+                  ><span data-translate="Paises_em_Destaque_Nav"
+                    >Países em Destaque</span
+                  ></a
+                >
+              </li>
+              <li>
+                <a class="dropdown-item" href="places.html"
+                  ><i class="fas fa-globe-americas"></i
+                  ><span data-translate="Todos_os_Paises_Nav"
+                    >Todos os Países</span
+                  ></a
+                >
+              </li>
+              <li><hr class="dropdown-divider" /></li>
+              <li>
+                <a class="dropdown-item" href="about.html"
+                  ><i class="fas fa-users"></i
+                  ><span data-translate="Quem_Somos_Nav">Quem Somos</span></a
+                >
+              </li>
+              <li>
+                <a class="dropdown-item" href="mission.html"
+                  ><i class="fas fa-bullseye"></i
+                  ><span data-translate="Nossa_Missao_Nav"
+                    >Nossa Missão</span
+                  ></a
+                >
+              </li>
+            </ul>
+          </div>
+
+          <!-- Botão de Configurações -->
+          <button
+            class="header-btn"
+            type="button"
+            id="configButton"
+            data-bs-toggle="modal"
+            data-bs-target="#configModal"
+            title="Configurações"
+          >
+            <i class="fas fa-cog"></i>
+          </button>
         </div>
       </nav>
     </header>
 
     <main class="container my-5">
       <div class="text-center mb-5">
-        <h1 class="display-4 fw-bold mb-3">O que Buscamos</h1>
-        <p class="lead text-muted">
+        <h1
+          class="display-4 fw-bold mb-3"
+          data-translate="Titulo_O_que_Buscamos"
+        >
+          O que Buscamos
+        </h1>
+        <p
+          class="lead text-muted"
+          data-translate="Subtitulo_Visao_Transformadora"
+        >
           Nossa visão transformadora para o futuro das viagens e da exploração
           mundial.
         </p>
@@ -77,21 +158,24 @@
               class="vision-image bg-light rounded-4 p-5 text-center shadow-sm"
             >
               <i class="fas fa-bullseye fa-3x text-primary mb-3"></i>
-              <h4>Nossa Visão</h4>
+              <h4 data-translate="Nossa_Visao">Nossa Visão</h4>
             </div>
           </div>
           <div class="col-lg-6">
-            <h2 class="fw-bold mb-4">
+            <h2
+              class="fw-bold mb-4"
+              data-translate="Transformar_Forma_Exploracao"
+            >
               Transformar a Forma Como o Mundo é Explorado
             </h2>
-            <p class="text-muted mb-4">
+            <p class="text-muted mb-4" data-translate="Nao_somos_apenas_guia">
               Não somos apenas um guia de viagens - somos uma plataforma que
               acredita no poder transformador da exploração. Imaginamos um mundo
               onde as barreiras para descobrir novos lugares sejam eliminadas,
               onde cada pessoa possa planejar sua aventura com confiança e
               inspiração.
             </p>
-            <p class="text-muted">
+            <p class="text-muted" data-translate="Objetivo_referencia_global">
               Nosso objetivo é ser a referência global em informações de viagem,
               conectando exploradores a destinos de maneira autêntica, acessível
               e profundamente enriquecedora.
@@ -102,8 +186,10 @@
 
       <section class="core-values mb-5 section-animate">
         <div class="text-center mb-5">
-          <h2 class="fw-bold mb-3">Nossos Pilares Fundamentais</h2>
-          <p class="text-muted">
+          <h2 class="fw-bold mb-3" data-translate="Nossos_Pilares_Fundamentais">
+            Nossos Pilares Fundamentais
+          </h2>
+          <p class="text-muted" data-translate="Principios_que_guam_jornada">
             Princípios que guiam cada passo da nossa jornada
           </p>
         </div>
@@ -117,8 +203,16 @@
                 >
                   <i class="fas fa-infinity text-primary fa-2x"></i>
                 </div>
-                <h5 class="fw-bold mb-3">Acessibilidade Universal</h5>
-                <p class="text-muted">
+                <h5
+                  class="fw-bold mb-3"
+                  data-translate="Pilar_Acessibilidade_Universal"
+                >
+                  Acessibilidade Universal
+                </h5>
+                <p
+                  class="text-muted"
+                  data-translate="Acreditamos_explorar_mundo"
+                >
                   Acreditamos que explorar o mundo deve ser possível para todos.
                   Trabalhamos para democratizar o acesso à informação de viagem,
                   independentemente de origem ou condição.
@@ -135,8 +229,13 @@
                 >
                   <i class="fas fa-sync-alt text-success fa-2x"></i>
                 </div>
-                <h5 class="fw-bold mb-3">Inovação Contínua</h5>
-                <p class="text-muted">
+                <h5
+                  class="fw-bold mb-3"
+                  data-translate="Pilar_Inovacao_Continua"
+                >
+                  Inovação Contínua
+                </h5>
+                <p class="text-muted" data-translate="Mundo_muda_rapidamente">
                   O mundo muda rapidamente, e nós também. Estamos constantemente
                   evoluindo nossa plataforma com as mais recentes tecnologias
                   para oferecer a melhor experiência possível aos viajantes.
@@ -153,8 +252,16 @@
                 >
                   <i class="fas fa-hand-holding-heart text-warning fa-2x"></i>
                 </div>
-                <h5 class="fw-bold mb-3">Impacto Positivo</h5>
-                <p class="text-muted">
+                <h5
+                  class="fw-bold mb-3"
+                  data-translate="Pilar_Impacto_Positivo"
+                >
+                  Impacto Positivo
+                </h5>
+                <p
+                  class="text-muted"
+                  data-translate="Queremos_contribuir_turismo"
+                >
                   Queremos que nossas ações contribuam para um turismo mais
                   responsável e sustentável. Promovemos práticas que respeitam
                   culturas locais e preservam os destinos para as futuras
@@ -169,8 +276,10 @@
       <section class="future-goals mb-5 section-animate">
         <div class="bg-primary bg-opacity-10 rounded-4 p-5">
           <div class="text-center mb-5">
-            <h2 class="fw-bold mb-3">Nosso Compromisso com o Futuro</h2>
-            <p class="text-muted">
+            <h2 class="fw-bold mb-3" data-translate="Compromisso_com_Futuro">
+              Nosso Compromisso com o Futuro
+            </h2>
+            <p class="text-muted" data-translate="Metas_trajetoria_crescimento">
               Metas que definem nossa trajetória de crescimento
             </p>
           </div>
@@ -185,9 +294,17 @@
                   >
                     1
                   </div>
-                  <h5 class="fw-bold mb-0">Comunidade Global de Viajantes</h5>
+                  <h5
+                    class="fw-bold mb-0"
+                    data-translate="Meta_Comunidade_Global"
+                  >
+                    Comunidade Global de Viajantes
+                  </h5>
                 </div>
-                <p class="text-muted ms-5">
+                <p
+                  class="text-muted ms-5"
+                  data-translate="Desenvolvendo_funcionalidades_compartilhar"
+                >
                   Estamos desenvolvendo funcionalidades que permitirão aos
                   usuários compartilhar experiências, criar roteiros
                   personalizados e se conectar com outros exploradores ao redor
@@ -203,11 +320,17 @@
                   >
                     2
                   </div>
-                  <h5 class="fw-bold mb-0">
+                  <h5
+                    class="fw-bold mb-0"
+                    data-translate="Meta_IA_Personalizada"
+                  >
                     Inteligência Artificial Personalizada
                   </h5>
                 </div>
-                <p class="text-muted ms-5">
+                <p
+                  class="text-muted ms-5"
+                  data-translate="Planejamos_integrar_IA"
+                >
                   Planejamos integrar IA para oferecer recomendações
                   hiperpersonalizadas com base no perfil, orçamento e interesses
                   de cada viajante, tornando o planejamento mais inteligente e
@@ -225,11 +348,17 @@
                   >
                     3
                   </div>
-                  <h5 class="fw-bold mb-0">
+                  <h5
+                    class="fw-bold mb-0"
+                    data-translate="Meta_Sustentabilidade"
+                  >
                     Sustentabilidade e Responsabilidade
                   </h5>
                 </div>
-                <p class="text-muted ms-5">
+                <p
+                  class="text-muted ms-5"
+                  data-translate="Vamos_destacar_praticas_sustentaveis"
+                >
                   Vamos destacar destinos e práticas que promovem o turismo
                   sustentável, ajudando os viajantes a fazerem escolhas
                   conscientes que beneficiem comunidades locais e o meio
@@ -245,9 +374,17 @@
                   >
                     4
                   </div>
-                  <h5 class="fw-bold mb-0">Experiências Imersivas</h5>
+                  <h5
+                    class="fw-bold mb-0"
+                    data-translate="Meta_Experiencias_Imersivas"
+                  >
+                    Experiências Imersivas
+                  </h5>
                 </div>
-                <p class="text-muted ms-5">
+                <p
+                  class="text-muted ms-5"
+                  data-translate="Explorando_tecnologias_AR_VR"
+                >
                   Estamos explorando tecnologias como realidade aumentada e
                   virtual para oferecer previews imersivos dos destinos,
                   permitindo que os viajantes "visitem" lugares antes de
@@ -260,8 +397,13 @@
       </section>
 
       <section class="cta-section text-center section-animate">
-        <h3 class="fw-bold mb-3">Junte-se à Nossa Missão</h3>
-        <p class="text-muted mb-4">
+        <h3 class="fw-bold mb-3" data-translate="Junte_se_a_Nossa_Missao">
+          Junte-se à Nossa Missão
+        </h3>
+        <p
+          class="text-muted mb-4"
+          data-translate="Faca_parte_comunidade_redefinindo"
+        >
           Faça parte da comunidade que está redefinindo a forma como o mundo é
           explorado
         </p>
@@ -270,13 +412,17 @@
             href="places.html"
             class="btn btn-primary btn-lg px-5 py-3 rounded-pill btn-hover-shadow"
           >
-            <i class="fas fa-compass me-2"></i>Explorar Destinos
+            <i class="fas fa-compass me-2"></i
+            ><span data-translate="Explorar_Destinos_Btn"
+              >Explorar Destinos</span
+            >
           </a>
           <a
             href="about.html"
             class="btn btn-outline-primary btn-lg px-5 py-3 rounded-pill btn-hover-shadow"
           >
-            <i class="fas fa-users me-2"></i>Conhecer a Equipe
+            <i class="fas fa-users me-2"></i
+            ><span data-translate="Conhecer_Equipe_Btn">Conhecer a Equipe</span>
           </a>
         </div>
       </section>
@@ -284,7 +430,9 @@
 
     <footer class="bg-dark text-white text-center py-4 mt-5">
       <div class="container">
-        <p class="m-0">&copy; 2025 NoMap. Todos os direitos reservados.</p>
+        <p class="m-0" data-translate="Direitos_Reservados">
+          &copy; 2025 NoMap. Todos os direitos reservados.
+        </p>
         <div class="mt-2">
           <a href="#" class="text-white text-decoration-none me-3"
             ><i class="fab fa-instagram"></i
@@ -301,5 +449,154 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="js/app.js"></script>
+
+    <!-- Modal de Configurações -->
+    <div
+      class="modal fade"
+      id="configModal"
+      tabindex="-1"
+      aria-labelledby="configModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="configModalLabel">
+              <i class="fas fa-cog me-2"></i
+              ><span data-translate="Configuracoes_do_Site"
+                >Configurações do Site</span
+              >
+            </h5>
+            <button
+              type="button"
+              class="btn-close btn-close-white"
+              data-bs-dismiss="modal"
+              aria-label="Fechar"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <div class="config-option">
+              <div class="d-flex justify-content-between align-items-center">
+                <div>
+                  <h6 class="mb-1">
+                    <i class="fas fa-moon me-2 text-primary"></i
+                    ><span data-translate="Modo_Escuro">Modo Escuro</span>
+                  </h6>
+                  <small
+                    class="text-muted"
+                    data-translate="Ative_o_tema_escuro_para_uma_melhor_experiencia_noturna"
+                  >
+                    Ative o tema escuro para uma melhor experiência
+                    noturna</small
+                  >
+                  >
+                </div>
+                <div class="form-check form-switch">
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    id="darkModeToggle"
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div class="config-option">
+              <div class="d-flex justify-content-between align-items-center">
+                <div>
+                  <h6 class="mb-1">
+                    <i class="fas fa-language me-2 text-success"></i
+                    ><span data-translate="Idioma">Idioma</span>
+                  </h6>
+                  <small
+                    class="text-muted"
+                    data-translate="Escolha_o_idioma_da_interface"
+                  >
+                    Escolha o idioma da interface</small
+                  >
+                  >
+                </div>
+                <select
+                  class="form-select form-select-sm"
+                  style="width: auto"
+                  id="languageSelect"
+                >
+                  <option value="pt-br" selected>Português (BR)</option>
+                  <option value="en">English</option>
+                  <option value="es">Español</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="config-option">
+              <div class="d-flex justify-content-between align-items-center">
+                <div>
+                  <h6 class="mb-1">
+                    <i class="fas fa-eye me-2 text-info"></i
+                    ><span data-translate="Animacoes">Animações</span>
+                  </h6>
+                  <small
+                    class="text-muted"
+                    data-translate="Controle_as_animacoes_da_interface"
+                  >
+                    Controle as animações da interface</small
+                  >
+                  >
+                </div>
+                <div class="form-check form-switch">
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    id="animationsToggle"
+                    checked
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div class="config-option">
+              <div class="d-flex justify-content-between align-items-center">
+                <div>
+                  <h6 class="mb-1">
+                    <i class="fas fa-bell me-2 text-warning"></i
+                    ><span data-translate="Notificacoes">Notificações</span>
+                  </h6>
+                  <small
+                    class="text-muted"
+                    data-translate="Receba_notificacoes_sobre_novos_destinos"
+                  >
+                    Receba notificações sobre novos destinos</small
+                  >
+                  >
+                </div>
+                <div class="form-check form-switch">
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    id="notificationsToggle"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+              data-translate="Cancelar"
+            >
+              Cancelar
+            </button>
+            <button type="button" class="btn btn-primary" id="saveConfigBtn">
+              <i class="fas fa-save me-2"></i
+              ><span data-translate="Salvar_Configuracoes"
+                >Salvar Configurações</span
+              >
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
   </body>
 </html>

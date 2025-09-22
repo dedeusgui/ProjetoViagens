@@ -1604,3 +1604,513 @@ footer {
   padding: 0.5rem 1rem;
   font-size: 0.9rem;
 }
+
+/* =============================================================================
+   HEADER BUTTONS E DROPDOWN
+   ============================================================================= */
+
+/* Botões do header */
+.header-btn {
+  background: var(--white);
+  border: 2px solid var(--gray-200);
+  border-radius: var(--border-radius-md);
+  padding: 0.75rem;
+  transition: all var(--transition-normal);
+  color: var(--gray-600);
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.header-btn:hover {
+  border-color: var(--primary-color);
+  color: var(--primary-color);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(37, 99, 235, 0.15);
+  background: rgba(37, 99, 235, 0.05);
+}
+
+.header-btn:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.12);
+}
+
+.header-btn.dropdown-toggle::after {
+  display: none;
+}
+
+/* Dropdown customizado */
+.dropdown-menu {
+  border: none;
+  border-radius: var(--border-radius-lg);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.12);
+  padding: 0.75rem;
+  margin-top: 0.5rem;
+  min-width: 240px;
+  backdrop-filter: blur(20px);
+  background: rgba(255, 255, 255, 0.98);
+  animation: slideDown 0.3s ease-out;
+}
+
+.dropdown-item {
+  border-radius: var(--border-radius-sm);
+  padding: 0.75rem 1rem;
+  margin-bottom: 0.25rem;
+  transition: all var(--transition-normal);
+  color: var(--gray-700);
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.dropdown-item i {
+  width: 20px;
+  text-align: center;
+  color: var(--gray-600);
+  transition: var(--transition-fast);
+}
+
+.dropdown-item:hover {
+  background: linear-gradient(
+    135deg,
+    rgba(37, 99, 235, 0.08) 0%,
+    rgba(14, 165, 233, 0.08) 100%
+  );
+  color: var(--primary-color);
+  transform: translateX(5px);
+}
+
+.dropdown-item:hover i {
+  color: var(--primary-color);
+  transform: scale(1.1);
+}
+
+.dropdown-item:focus {
+  background: linear-gradient(
+    135deg,
+    rgba(37, 99, 235, 0.12) 0%,
+    rgba(14, 165, 233, 0.12) 100%
+  );
+  color: var(--primary-color);
+  outline: none;
+}
+
+.dropdown-divider {
+  margin: 0.5rem 0;
+  opacity: 0.2;
+  border-top: 1px solid var(--gray-300);
+}
+
+/* Modal de configurações */
+.modal-content {
+  border: none;
+  border-radius: var(--border-radius-xl);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+  overflow: hidden;
+  z-index: 20050 !important;
+}
+
+.modal-header {
+  background: linear-gradient(
+    135deg,
+    var(--primary-color) 0%,
+    var(--accent-color) 100%
+  );
+  color: var(--white);
+  border: none;
+  padding: 2rem;
+  z-index: 20050 !important;
+}
+
+.modal-title {
+  font-weight: 700;
+  font-size: 1.5rem;
+  z-index: 20050 !important;
+}
+
+.btn-close-white {
+  filter: invert(1) grayscale(100%) brightness(200%);
+}
+
+.modal-body {
+  padding: 2rem;
+  z-index: 20050 !important;
+}
+
+.config-option {
+  padding: 1.5rem;
+  border-radius: var(--border-radius-md);
+  border: 2px solid var(--gray-200);
+  margin-bottom: 1rem;
+  transition: all var(--transition-normal);
+  background: var(--white);
+}
+
+.config-option:hover {
+  border-color: var(--primary-color);
+  background: rgba(37, 99, 235, 0.03);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(37, 99, 235, 0.1);
+}
+
+.config-option h6 {
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+  color: var(--gray-800);
+}
+
+.form-check-input:checked {
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
+}
+
+.form-check-input:focus {
+  border-color: var(--primary-color);
+  outline: 0;
+  box-shadow: 0 0 0 0.25rem rgba(37, 99, 235, 0.25);
+}
+
+.form-select:focus {
+  border-color: var(--primary-color);
+  outline: 0;
+  box-shadow: 0 0 0 0.25rem rgba(37, 99, 235, 0.25);
+}
+
+/* Responsividade para os botões */
+@media (max-width: 768px) {
+  .d-flex.ms-auto {
+    gap: 0.5rem;
+  }
+
+  .form-control {
+    width: 120px;
+    padding: 0.625rem 0.875rem;
+  }
+
+  .header-btn {
+    width: 44px;
+    height: 44px;
+    padding: 0.625rem;
+  }
+
+  .dropdown-menu {
+    min-width: 200px;
+    right: 0;
+    left: auto;
+    margin-top: 0.25rem;
+  }
+
+  .dropdown-item {
+    padding: 0.625rem 0.875rem;
+    font-size: 0.9rem;
+  }
+
+  .modal-header {
+    padding: 1.5rem;
+  }
+
+  .modal-body {
+    padding: 1.5rem;
+  }
+
+  .config-option {
+    padding: 1.25rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .form-control {
+    width: 100px;
+  }
+
+  .header-btn {
+    width: 40px;
+    height: 40px;
+    padding: 0.5rem;
+  }
+
+  .dropdown-menu {
+    min-width: 180px;
+  }
+}
+/* =============================================================================
+   MODO ESCURO
+   ============================================================================= */
+:root {
+  /* Cores claras (padrão) */
+  --bg-primary: #f8fafc;
+  --bg-secondary: #ffffff;
+  --text-primary: #334155;
+  --text-secondary: #64748b;
+  --text-muted: #94a3b8;
+  --border-color: #e2e8f0;
+  --shadow-color: rgba(0, 0, 0, 0.08);
+  --card-bg: #ffffff;
+  --header-bg: rgba(255, 255, 255, 0.95);
+}
+
+/* Tema escuro */
+body.dark-theme {
+  --bg-primary: #0f172a;
+  --bg-secondary: #1e293b;
+  --text-primary: #f1f5f9;
+  --text-secondary: #cbd5e1;
+  --text-muted: #94a3b8;
+  --border-color: #334155;
+  --shadow-color: rgba(0, 0, 0, 0.3);
+  --card-bg: #1e293b;
+  --header-bg: rgba(30, 41, 59, 0.95);
+
+  /* Cores específicas do tema escuro */
+  --gray-100: #334155;
+  --gray-200: #475569;
+  --gray-300: #64748b;
+  --gray-600: #cbd5e1;
+  --gray-700: #f1f5f9;
+  --gray-800: #f8fafc;
+  --light: #0f172a;
+  --dark: #f8fafc;
+}
+
+/* Aplicar variáveis aos elementos */
+body {
+  background-color: var(--bg-primary) !important;
+  color: var(--text-primary) !important;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.card {
+  background-color: var(--card-bg) !important;
+  color: var(--text-primary) !important;
+  border-color: var(--border-color) !important;
+}
+
+.card-body {
+  color: var(--text-primary) !important;
+}
+
+header {
+  background: var(--header-bg) !important;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.navbar-brand {
+  color: var(--text-primary) !important;
+}
+
+.form-control {
+  background-color: var(--card-bg) !important;
+  border-color: var(--border-color) !important;
+  color: var(--text-primary) !important;
+}
+
+.form-control::placeholder {
+  color: var(--text-muted) !important;
+}
+
+.text-muted {
+  color: var(--text-muted) !important;
+}
+
+.dropdown-menu {
+  background: var(--header-bg) !important;
+  border-color: var(--border-color) !important;
+}
+
+.dropdown-item {
+  color: var(--text-primary) !important;
+}
+
+.dropdown-item:hover {
+  background: rgba(37, 99, 235, 0.1) !important;
+}
+
+.modal-content {
+  background-color: var(--card-bg) !important;
+  color: var(--text-primary) !important;
+}
+
+.modal-body {
+  background-color: var(--card-bg) !important;
+}
+
+.config-option {
+  background-color: var(--card-bg) !important;
+  border-color: var(--border-color) !important;
+}
+
+.hero-section {
+  background: linear-gradient(
+    135deg,
+    rgba(37, 99, 235, 0.08) 0%,
+    rgba(14, 165, 233, 0.08) 100%
+  );
+}
+
+body.dark-theme .hero-section {
+  background: linear-gradient(
+    135deg,
+    rgba(37, 99, 235, 0.15) 0%,
+    rgba(14, 165, 233, 0.15) 100%
+  );
+}
+
+/* Footer no modo escuro */
+body.dark-theme footer {
+  background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%) !important;
+}
+
+/* =============================================================================
+   CONTROLE DE ANIMAÇÕES
+   ============================================================================= */
+body.no-animations * {
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.01ms !important;
+  scroll-behavior: auto !important;
+}
+
+body.no-animations *::before,
+body.no-animations *::after {
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.01ms !important;
+}
+
+/* =============================================================================
+   ESTILOS PARA SUPORTE A IDIOMAS
+   ============================================================================= */
+[lang="en"] .lang-pt,
+[lang="es"] .lang-pt {
+  display: none !important;
+}
+
+[lang="pt-br"] .lang-en,
+[lang="es"] .lang-en {
+  display: none !important;
+}
+
+[lang="pt-br"] .lang-es,
+[lang="en"] .lang-es {
+  display: none !important;
+}
+
+[lang="en"] .lang-en,
+[lang="pt-br"] .lang-pt,
+[lang="es"] .lang-es {
+  display: block !important;
+}
+
+/* Ajustes para elementos inline */
+.lang-pt,
+.lang-en,
+.lang-es {
+  display: inline !important;
+}
+
+/* =============================================================================
+   NOTIFICAÇÕES PERSONALIZADAS
+   ============================================================================= */
+.notification-toast {
+  position: fixed;
+  top: 100px;
+  right: 20px;
+  z-index: 9999;
+  min-width: 300px;
+  max-width: 400px;
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  box-shadow: 0 12px 32px var(--shadow-color);
+  padding: 1rem;
+  transform: translateX(100%);
+  transition: transform 0.3s ease;
+}
+
+.notification-toast.show {
+  transform: translateX(0);
+}
+
+.notification-toast .toast-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.notification-toast .toast-icon {
+  width: 20px;
+  height: 20px;
+  background: var(--primary-color);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 0.8rem;
+}
+
+.notification-toast .toast-close {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 0;
+  font-size: 1.2rem;
+}
+
+.notification-toast .toast-body {
+  color: var(--text-primary);
+  font-size: 0.9rem;
+  line-height: 1.4;
+}
+
+/* =============================================================================
+   TEMA ESCURO - ELEMENTOS ESPECÍFICOS
+   ============================================================================= */
+body.dark-theme .explore-card {
+  background: var(--card-bg) !important;
+  border-color: var(--border-color) !important;
+}
+
+body.dark-theme .country-card {
+  background: var(--card-bg) !important;
+  border-color: var(--border-color) !important;
+}
+
+body.dark-theme .country-info-grid,
+body.dark-theme .country-info-grid.flex-grow-1 {
+  background: rgba(37, 99, 235, 0.1) !important;
+}
+
+body.dark-theme .alert {
+  background: var(--card-bg) !important;
+  border-color: var(--border-color) !important;
+}
+
+body.dark-theme .spinner-border {
+  color: var(--primary-color) !important;
+}
+
+/* Ajustes para badges no tema escuro */
+body.dark-theme .badge {
+  background: rgba(37, 99, 235, 0.2) !important;
+  color: var(--text-primary) !important;
+}
+
+body.dark-theme .country-badge {
+  background: rgba(30, 41, 59, 0.95) !important;
+  color: var(--text-primary) !important;
+  border-color: var(--border-color) !important;
+}
