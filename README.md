@@ -6,6 +6,8 @@
 [![Status do Projeto](https://img.shields.io/badge/status-ativo-green.svg)]()
 [![Versão](https://img.shields.io/badge/versão-0.0.5-brightgreen.svg)]()
 
+ https://nomap.vercel.app/
+ 
 ## 📖 Sobre o Projeto
 
 **NoMap** é uma aplicação web moderna que centraliza informações sobre países de todo o mundo, oferecendo uma experiência rica e interativa para viajantes, estudantes e entusiastas de geografia. Com design responsivo e dados atualizados em tempo real, a plataforma democratiza o acesso à informação sobre destinos globais.
