@@ -271,10 +271,17 @@ const api = {
       }
     },
 
-    getByRegion: (region) =>
-      api.fetch(
-        `${CONFIG.api.restCountries.baseUrl}/region/${region}?fields=name,flags,capital,population,continents,languages,currencies`
-      ),
+    getByRegion: (region) => {
+      // Adicionamos 'cca3' e 'translations' à lista de campos para garantir
+      // que os links dos cards e os nomes traduzidos funcionem corretamente.
+      const fields =
+        "name,flags,capital,population,continents,languages,currencies,cca3,translations";
+      return api.fetch(
+        `${CONFIG.api.restCountries.baseUrl}/region/${encodeURIComponent(
+          region
+        )}?fields=${fields}`
+      );
+    },
 
     getByName: async (name) => {
       const encoded = encodeURIComponent(name);
@@ -1419,9 +1426,20 @@ const pageManager = {
     }
 
     if (continentFilter) {
-      continentFilter.addEventListener("change", () => {
+      continentFilter.addEventListener("change", async () => {
         const region = continentFilter.value;
-        region ? countries.loadByRegion(region) : countries.loadAll();
+
+        if (region) {
+          await countries.loadByRegion(region);
+        } else {
+          await countries.loadAll();
+        }
+        if (searchCountryInput) {
+          searchCountryInput.value = "";
+        }
+        if (dom.elements.countriesTitle) {
+          dom.updateTitle(dom.elements.countriesTitle, 0, "");
+        }
       });
     }
 
