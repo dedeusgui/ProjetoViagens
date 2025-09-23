@@ -1,6 +1,3 @@
-// Import logger
-import { logger } from './logger.js';
-
 // ===========================
 // Configuração e Constantes
 // ===========================
@@ -92,43 +89,49 @@ const WEATHER_DICTIONARY = {
   // adicione novos termos conforme aparecerem
 };
 
-const WEATHER_TRANSLATIONS = {
-  'rain': { pt: 'Chuva', es: 'Lluvia', en: 'Rain' },
-  'cloud': { pt: 'Nublado', es: 'Nublado', en: 'Cloudy' },
-  'clear': { pt: 'Céu limpo', es: 'Cielo despejado', en: 'Clear sky' }
-};
-
 function translateWeatherDescription(
   rawDesc,
   uiLang = (headerButtons && headerButtons.currentLanguage) || "en"
 ) {
   if (!rawDesc) return "";
-  
   const key = rawDesc.toString().trim().toLowerCase();
-  const shortLang = uiLang.split("-")[0];
-  
-  // Check weather dictionary first
+  const shortLang = uiLang.split("-")[0]; // 'pt' de 'pt-br'
+
+  // busca direta no dicionário
   if (WEATHER_DICTIONARY[key]) {
     const entry = WEATHER_DICTIONARY[key];
-    return entry[shortLang] || entry.en || key;
+    if (shortLang === "pt") return entry.pt || entry.en;
+    if (shortLang === "es") return entry.es || entry.pt || entry.en;
+    return entry.en || entry.pt;
   }
-  
-  // Check common weather patterns
-  for (const [pattern, translations] of Object.entries(WEATHER_TRANSLATIONS)) {
-    if (key.includes(pattern)) {
-      return translations[shortLang] || translations.en;
-    }
+
+  // heurística simples: detectar palavras chaves (ex.: "rain", "chuva")
+  if (key.includes("rain") || key.includes("chuva")) {
+    if (shortLang === "pt") return "Chuva";
+    if (shortLang === "es") return "Lluvia";
+    return "Rain";
   }
-  
-  // Fallback: capitalize first letter
-  return key.charAt(0).toUpperCase() + key.slice(1);
+  if (key.includes("cloud")) {
+    if (shortLang === "pt") return "Nublado";
+    if (shortLang === "es") return "Nublado";
+    return "Cloudy";
+  }
+  if (key.includes("clear") || key.includes("céu limpo")) {
+    if (shortLang === "pt") return "Céu limpo";
+    if (shortLang === "es") return "Cielo despejado";
+    return "Clear sky";
+  }
+
+  // fallback: capitaliza a primeira letra para manter aparência aceitável
+  const out = rawDesc.toString().trim();
+  return out.charAt(0).toUpperCase() + out.slice(1);
 }
 
 function ensureAbsoluteUrl(u) {
   if (!u) return CONFIG.defaults.placeholderImage;
   const trimmed = u.trim();
   if (/^https?:\/\//i.test(trimmed)) return trimmed;
-  
+
   try {
     return new URL(trimmed, window.location.href).href;
   } catch (e) {
@@ -137,18 +140,12 @@ function ensureAbsoluteUrl(u) {
 }
 
 // --- helper: escolher melhor nome para exibição (considera idioma da UI) ---
-const displayNameCache = new Map();
-
 const getDisplayName = (
   country,
   uiLang = (typeof headerButtons !== "undefined" &&
     headerButtons.currentLanguage) ||
     "en"
 ) => {
-  const cacheKey = `${country?.code || ''}-${uiLang}`;
-  if (displayNameCache.has(cacheKey)) {
-    return displayNameCache.get(cacheKey);
-  }
   if (!country) return "N/A";
 
   // se UI for inglês, prefira name.common (REST Countries fornece inglês por padrão)
@@ -181,9 +178,7 @@ const getDisplayName = (
 
   // fallback: nativeName -> name.common -> cca3
   const native = Object.values(country.name?.nativeName || {})[0];
-  const result = native?.common || country.name?.common || country.cca3 || "N/A";
-  displayNameCache.set(cacheKey, result);
-  return result;
+  return native?.common || country.name?.common || country.cca3 || "N/A";
 };
 // --- fim helper ---
 
@@ -249,7 +244,7 @@ const api = {
       }
       return await response.json();
     } catch (error) {
-      logger.error("API request failed:", error);
+      console.error("API request failed:", error);
       throw error;
     }
   },
@@ -324,7 +319,7 @@ const api = {
         const query = (rawQuery || "").toString().trim();
         if (!query) {
           // evita chamar a API com query vazia (isso gera 400)
-          logger.warn("getImageFromUnsplash: query vazia, usando placeholder");
+          console.warn("getImageFromUnsplash: query vazia, usando placeholder");
           return placeholder;
         }
 
