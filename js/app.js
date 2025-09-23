@@ -1,3 +1,6 @@
+// Import logger
+import { logger } from './logger.js';
+
 // ===========================
 // Configuração e Constantes
 // ===========================
@@ -19,6 +22,7 @@ const CONFIG = {
   defaults: {
     placeholderFlag: "https://via.placeholder.com/300x200?text=Bandeira",
     placeholderImage: "https://via.placeholder.com/1920x1080?text=NoMap",
+    fallbackLocalImage: "/assets/no-image.png",
   },
   featured: ["Brazil", "Japan", "Italy", "Egypt", "Australia", "Canada"],
   debounce: {
@@ -41,6 +45,147 @@ const state = {
 // ===========================
 // Utilitários Puros
 // ===========================
+
+// ---------------------------
+// WEATHER_DICTIONARY + tradutor (Opção B - client-side)
+// ---------------------------
+const WEATHER_DICTIONARY = {
+  // chave em lowercase (como a API normalmente retorna)
+  "clear sky": { en: "Clear sky", pt: "Céu limpo", es: "Cielo despejado" },
+  "céu limpo": { en: "Clear sky", pt: "Céu limpo", es: "Cielo despejado" },
+  sunny: { en: "Sunny", pt: "Ensolarado", es: "Soleado" },
+  ensolarado: { en: "Sunny", pt: "Ensolarado", es: "Soleado" },
+  cloudy: { en: "Cloudy", pt: "Nublado", es: "Nublado" },
+  nublado: { en: "Cloudy", pt: "Nublado", es: "Nublado" },
+  "few clouds": {
+    en: "Partly cloudy",
+    pt: "Parcialmente nublado",
+    es: "Parcialmente nublado",
+  },
+  "partly cloudy": {
+    en: "Partly cloudy",
+    pt: "Parcialmente nublado",
+    es: "Parcialmente nublado",
+  },
+  "scattered clouds": {
+    en: "Scattered clouds",
+    pt: "Nuvens dispersas",
+    es: "Nubes dispersas",
+  },
+  "broken clouds": {
+    en: "Broken clouds",
+    pt: "Nuvens fragmentadas",
+    es: "Nubes variables",
+  },
+  "shower rain": { en: "Shower rain", pt: "Aguaceiro", es: "Chubasco" },
+  rain: { en: "Rain", pt: "Chuva", es: "Lluvia" },
+  "light rain": { en: "Light rain", pt: "Chuva leve", es: "Lluvia ligera" },
+  "moderate rain": {
+    en: "Moderate rain",
+    pt: "Chuva moderada",
+    es: "Lluvia moderada",
+  },
+  thunderstorm: { en: "Thunderstorm", pt: "Trovoada", es: "Tormenta" },
+  snow: { en: "Snow", pt: "Neve", es: "Nieve" },
+  mist: { en: "Mist", pt: "Névoa", es: "Niebla" },
+  haze: { en: "Haze", pt: "Neblina", es: "Bruma" },
+  // adicione novos termos conforme aparecerem
+};
+
+const WEATHER_TRANSLATIONS = {
+  'rain': { pt: 'Chuva', es: 'Lluvia', en: 'Rain' },
+  'cloud': { pt: 'Nublado', es: 'Nublado', en: 'Cloudy' },
+  'clear': { pt: 'Céu limpo', es: 'Cielo despejado', en: 'Clear sky' }
+};
+
+function translateWeatherDescription(
+  rawDesc,
+  uiLang = (headerButtons && headerButtons.currentLanguage) || "en"
+) {
+  if (!rawDesc) return "";
+  
+  const key = rawDesc.toString().trim().toLowerCase();
+  const shortLang = uiLang.split("-")[0];
+  
+  // Check weather dictionary first
+  if (WEATHER_DICTIONARY[key]) {
+    const entry = WEATHER_DICTIONARY[key];
+    return entry[shortLang] || entry.en || key;
+  }
+  
+  // Check common weather patterns
+  for (const [pattern, translations] of Object.entries(WEATHER_TRANSLATIONS)) {
+    if (key.includes(pattern)) {
+      return translations[shortLang] || translations.en;
+    }
+  }
+  
+  // Fallback: capitalize first letter
+  return key.charAt(0).toUpperCase() + key.slice(1);
+}
+
+function ensureAbsoluteUrl(u) {
+  if (!u) return CONFIG.defaults.placeholderImage;
+  const trimmed = u.trim();
+  if (/^https?:\/\//i.test(trimmed)) return trimmed;
+  
+  try {
+    return new URL(trimmed, window.location.href).href;
+  } catch (e) {
+    return fallback;
+  }
+}
+
+// --- helper: escolher melhor nome para exibição (considera idioma da UI) ---
+const displayNameCache = new Map();
+
+const getDisplayName = (
+  country,
+  uiLang = (typeof headerButtons !== "undefined" &&
+    headerButtons.currentLanguage) ||
+    "en"
+) => {
+  const cacheKey = `${country?.code || ''}-${uiLang}`;
+  if (displayNameCache.has(cacheKey)) {
+    return displayNameCache.get(cacheKey);
+  }
+  if (!country) return "N/A";
+
+  // se UI for inglês, prefira name.common (REST Countries fornece inglês por padrão)
+  if (/^en/i.test(uiLang)) {
+    return country.name?.common || country.cca3 || "N/A";
+  }
+
+  // map simplificado UI language -> códigos de translations do restcountries
+  const langMap = {
+    pt: ["por"],
+    "pt-br": ["por"],
+    es: ["spa"],
+    fr: ["fra"],
+    de: ["deu"],
+    it: ["ita"],
+    ru: ["rus"],
+    zh: ["zho", "chi"],
+    ja: ["jpn"],
+    ar: ["ara"],
+  };
+
+  const tries = (langMap[uiLang] || []).concat(
+    Object.keys(country.translations || {})
+  );
+
+  for (const code of tries) {
+    const t = country.translations?.[code];
+    if (t?.common) return t.common;
+  }
+
+  // fallback: nativeName -> name.common -> cca3
+  const native = Object.values(country.name?.nativeName || {})[0];
+  const result = native?.common || country.name?.common || country.cca3 || "N/A";
+  displayNameCache.set(cacheKey, result);
+  return result;
+};
+// --- fim helper ---
 
 const utils = {
   debounce: (func, delay) => {
@@ -79,6 +224,16 @@ const utils = {
       return "N/A";
     }
   },
+
+  // Helper para escolher o melhor nome para exibir
+  getDisplayName: (country, uiLang = headerButtons.currentLanguage) =>
+    getDisplayName(country, uiLang),
+
+  // Helper para substituir placeholders em templates
+  applyTemplate: (str, vars = {}) =>
+    str.replace(/\$\{(.+?)\}/g, (_, k) =>
+      vars[k] !== undefined ? vars[k] : ""
+    ),
 };
 
 // ===========================
@@ -94,7 +249,7 @@ const api = {
       }
       return await response.json();
     } catch (error) {
-      console.error("API request failed:", error);
+      logger.error("API request failed:", error);
       throw error;
     }
   },
@@ -102,8 +257,24 @@ const api = {
   countries: {
     getAll: () =>
       api.fetch(
-        `${CONFIG.api.restCountries.baseUrl}/all?fields=name,flags,capital,population,continents,languages,currencies`
+        `${CONFIG.api.restCountries.baseUrl}/all?fields=name,flags,capital,population,continents,languages,currencies,translations,cca3,altSpellings`
       ),
+
+    getByCode: async (code) => {
+      if (!code) return null;
+      const fields =
+        "name,capital,population,languages,currencies,latlng,timezones,flags,borders,region,subregion,continents,translations,cca3,idd,tld,area,altSpellings";
+      try {
+        return await api.fetch(
+          `${CONFIG.api.restCountries.baseUrl}/alpha/${encodeURIComponent(
+            code
+          )}?fields=${fields}`
+        );
+      } catch (e) {
+        if (e.message?.includes("404")) return null;
+        throw e;
+      }
+    },
 
     getByRegion: (region) =>
       api.fetch(
@@ -147,16 +318,93 @@ const api = {
   },
 
   unsplash: {
-    getImage: async (query) => {
+    getImage: async function getImageFromUnsplash(rawQuery) {
+      const placeholder = ensureAbsoluteUrl(CONFIG?.defaults?.placeholderImage);
       try {
-        const data = await api.fetch(
-          `${CONFIG.api.unsplash.baseUrl}?query=${query}&per_page=1&client_id=${CONFIG.api.unsplash.key}`
-        );
-        return data.results[0].urls.full;
-      } catch {
-        return CONFIG.defaults.placeholderImage;
+        const query = (rawQuery || "").toString().trim();
+        if (!query) {
+          // evita chamar a API com query vazia (isso gera 400)
+          logger.warn("getImageFromUnsplash: query vazia, usando placeholder");
+          return placeholder;
+        }
+
+        // monte URL corretamente (CONFIRME que CONFIG.api.unsplash.baseUrl === 'https://api.unsplash.com/search/photos')
+        const base =
+          (CONFIG &&
+            CONFIG.api &&
+            CONFIG.api.unsplash &&
+            CONFIG.api.unsplash.baseUrl) ||
+          "https://api.unsplash.com/search/photos";
+        const key =
+          (CONFIG &&
+            CONFIG.api &&
+            CONFIG.api.unsplash &&
+            CONFIG.api.unsplash.key) ||
+          "";
+        const encoded = encodeURIComponent(query);
+        const url = `${base}?query=${encoded}&per_page=1&client_id=${encodeURIComponent(
+          key
+        )}`;
+
+        // fetch direto — evita wrappers que retornam undefined inesperadamente
+        const resp = await fetch(url);
+        if (!resp) {
+          console.warn(
+            "getImageFromUnsplash: fetch retornou undefined para",
+            query
+          );
+          return placeholder;
+        }
+
+        if (!resp.ok) {
+          // registra status e corpo para debug, mas não explode — retorna placeholder
+          let bodyText = "";
+          try {
+            bodyText = await resp.text();
+          } catch (e) {
+            /* ignore */
+          }
+          console.warn(
+            `Unsplash returned ${resp.status} for query "${query}" — body:`,
+            bodyText
+          );
+          return placeholder;
+        }
+
+        const data = await resp.json().catch(() => null);
+        if (
+          !data ||
+          !Array.isArray(data.results) ||
+          data.results.length === 0
+        ) {
+          console.warn("getImageFromUnsplash: nenhum resultado para", query);
+          return placeholder;
+        }
+
+        const r = data.results[0];
+        const imgUrl =
+          r.urls?.full || r.urls?.regular || r.urls?.small || r.urls?.raw;
+        return ensureAbsoluteUrl(imgUrl || placeholder);
+      } catch (err) {
+        console.warn("getImageFromUnsplash error:", err);
+        return ensureAbsoluteUrl(CONFIG?.defaults?.placeholderImage);
       }
     },
+  },
+
+  ensureAbsoluteUrl(u) {
+    const placeholder =
+      CONFIG?.defaults?.placeholderImage ||
+      CONFIG.defaults.fallbackLocalImage ||
+      'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="1920" height="1080"><rect width="100%" height="100%" fill="#ddd"/></svg>';
+    try {
+      if (!u) return placeholder;
+      const url = new URL(u, window.location.href);
+      if (!url.host) return placeholder;
+      return url.href;
+    } catch {
+      return placeholder;
+    }
   },
 };
 
@@ -196,12 +444,23 @@ const dom = {
     if (!searchTerm) {
       title.textContent = "";
     } else if (count === 0) {
-      title.textContent = `Nenhum país encontrado para "${searchTerm}"`;
+      const msg =
+        headerButtons.translations[headerButtons.currentLanguage]?.[
+          "Nenhum_pais_encontrado_para"
+        ] || `Nenhum país encontrado para "${searchTerm}"`;
+      title.textContent = msg.replace("${searchTerm}", searchTerm);
     } else {
       const plural = count !== 1;
-      title.textContent = `${count} país${plural ? "es" : ""} encontrado${
-        plural ? "s" : ""
-      } para "${searchTerm}"`;
+      const baseMsg = plural
+        ? headerButtons.translations[headerButtons.currentLanguage]?.[
+            "Paises_encontrados_para"
+          ] || `${count} países encontrados para "${searchTerm}"`
+        : headerButtons.translations[headerButtons.currentLanguage]?.[
+            "Pais_encontrado_para"
+          ] || `${count} país encontrado para "${searchTerm}"`;
+      title.textContent = baseMsg
+        .replace("${count}", count)
+        .replace("${searchTerm}", searchTerm);
     }
   },
 };
@@ -253,118 +512,120 @@ const templates = {
 
   error: {
     general: (keyOrMessage = "Erro_geral") => {
-      // Verifica se é uma chave conhecida ou uma mensagem fallback
       const message =
         headerButtons.translations[headerButtons.currentLanguage]?.[
           keyOrMessage
         ] || keyOrMessage;
       return `
-      <div class="alert alert-danger w-100" role="alert">
-        ${message}
-      </div>`;
+    <div class="alert alert-danger w-100" role="alert">
+      ${message}
+    </div>`;
     },
+
     noResults: () => `
-    <div class="col-12">
-      <div class="alert alert-info text-center" role="alert">
-        <i class="fas fa-search me-2"></i><span data-translate="Nenhum_pais_encontrado">Nenhum país encontrado.</span>
-      </div>
-    </div>`,
+  <div class="col-12">
+    <div class="alert alert-info text-center" role="alert">
+      <i class="fas fa-search me-2"></i><span data-translate="Nenhum_pais_encontrado">Nenhum país encontrado.</span>
+    </div>
+  </div>`,
+
     featured: () => `
-    <div class="col-12">
-      <div class="premium-error-card text-center p-5 rounded-4">
-        <div class="error-icon mb-4">
-          <i class="fas fa-globe-americas fa-4x text-muted opacity-50"></i>
-        </div>
-        <h3 class="text-dark mb-3" data-translate="Ops_algo_deu_errado">Ops! Algo deu errado</h3>
-        <p class="text-muted mb-4 fs-5" data-translate="Nao_conseguimos_carregar_os_destinos_em_destaque">Não conseguimos carregar os destinos em destaque no momento.</p>
-        <div class="d-flex gap-3 justify-content-center flex-wrap">
-          <button class="btn btn-primary btn-lg rounded-pill px-4" onclick="featured.display()">
-            <i class="fas fa-redo-alt me-2"></i><span data-translate="Tentar_Novamente">Tentar Novamente</span>
-          </button>
-          <a href="places.html" class="btn btn-outline-primary btn-lg rounded-pill px-4">
-            <i class="fas fa-globe me-2"></i><span data-translate="Ver_Todos_os_Paises">Ver Todos os Países</span>
-          </a>
-        </div>
+  <div class="col-12">
+    <div class="premium-error-card text-center p-5 rounded-4">
+      <div class="error-icon mb-4">
+        <i class="fas fa-globe-americas fa-4x text-muted opacity-50"></i>
+      </div>
+      <h3 class="text-dark mb-3" data-translate="Ops_algo_deu_errado">Ops! Algo deu errado</h3>
+      <p class="text-muted mb-4 fs-5" data-translate="Nao_conseguimos_carregar_os_destinos_em_destaque">Não conseguimos carregar os destinos em destaque no momento.</p>
+      <div class="d-flex gap-3 justify-content-center flex-wrap">
+        <button class="btn btn-primary btn-lg rounded-pill px-4" onclick="featured.display()">
+          <i class="fas fa-redo-alt me-2"></i><span data-translate="Tentar_Novamente">Tentar Novamente</span>
+        </button>
+        <a href="places.html" class="btn btn-outline-primary btn-lg rounded-pill px-4">
+          <i class="fas fa-globe me-2"></i><span data-translate="Ver_Todos_os_Paises">Ver Todos os Países</span>
+        </a>
       </div>
     </div>
-    <style>
-      .premium-error-card {
-        background: linear-gradient(145deg, #ffffff 0%, #f8fafc 100%);
-        box-shadow: 0 20px 60px rgba(0,0,0,0.08);
-        border: 1px solid #e2e8f0;
-      }
-    </style>`,
+  </div>
+  <style>
+    .premium-error-card {
+      background: linear-gradient(145deg, #ffffff 0%, #f8fafc 100%);
+      box-shadow: 0 20px 60px rgba(0,0,0,0.08);
+      border: 1px solid #e2e8f0;
+    }
+  </style>`,
   },
 
   countryCard: (country) => {
     const data = extractCountryData(country);
     return `
-  <div class="col">
-    <div class="card country-card h-100 shadow-sm border-0">
-      <div class="position-relative">
-        <img src="${
-          data.flagUrl
-        }" class="country-flag-img w-100" style="height: 150px; object-fit: cover;" alt="Bandeira de ${
-      data.name
-    }">
-        <div class="country-badge-container">
-          <span class="country-badge">${data.continent}</span>
-        </div>
-      </div>
-      <div class="card-body p-3 d-flex flex-column">
-        <h5 class="card-title fw-bold text-primary mb-3">${data.name}</h5>
-        <div class="country-info-grid-icons">
-          <div class="info-item-icon">
-            <div class="icon-wrapper bg-primary-subtle text-primary">
-              <i class="fas fa-building fa-sm"></i>
-            </div>
-            <div class="info-text">
-              <small data-translate="Capital">Capital</small>
-              <p class="mb-0 text-truncate" title="${data.capital}">${
-      data.capital
-    }</p>
-            </div>
-          </div>
-          <div class="info-item-icon">
-            <div class="icon-wrapper bg-success-subtle text-success">
-              <i class="fas fa-users fa-sm"></i>
-            </div>
-            <div class="info-text">
-              <small data-translate="Populacao">População</small>
-              <p class="mb-0">${data.population}</p>
-            </div>
-          </div>
-          <div class="info-item-icon">
-            <div class="icon-wrapper bg-info-subtle text-info">
-              <i class="fas fa-language fa-sm"></i>
-            </div>
-            <div class="info-text">
-              <small data-translate="Idioma">Idioma</small>
-              <p class="mb-0 text-truncate" title="${data.language}">${
-      data.language
-    }</p>
-            </div>
-          </div>
-          <div class="info-item-icon">
-            <div class="icon-wrapper bg-warning-subtle text-warning">
-              <i class="fas fa-money-bill-wave fa-sm"></i>
-            </div>
-            <div class="info-text">
-              <small data-translate="Moeda">Moeda</small>
-              <p class="mb-0 text-truncate" title="${data.currency}">${
-      data.currency
-    }</p>
-            </div>
-          </div>
-        </div>
-        <a href="country.html?name=${encodeURIComponent(
-          data.name
-        )}" class="btn btn-primary mt-auto w-100 btn-sm">
-          <i class="fas fa-map-marker-alt me-1"></i><span data-translate="Explorar">Explorar</span>
-        </a>
+<div class="col">
+  <div class="card country-card h-100 shadow-sm border-0">
+    <div class="position-relative">
+      <img src="${
+        data.flagUrl
+      }" class="country-flag-img w-100" style="height: 150px; object-fit: cover;" alt="Bandeira de ${getDisplayName(
+      data,
+      headerButtons?.currentLanguage || "en"
+    )}">
+      <div class="country-badge-container">
+        <span class="country-badge">${data.continent}</span>
       </div>
     </div>
-  </div>`;
+    <div class="card-body p-3 d-flex flex-column">
+      <h5 class="card-title fw-bold text-primary mb-3">${data.name}</h5>
+      <div class="country-info-grid-icons">
+        <div class="info-item-icon">
+          <div class="icon-wrapper bg-primary-subtle text-primary">
+            <i class="fas fa-building fa-sm"></i>
+          </div>
+          <div class="info-text">
+            <small data-translate="Capital">Capital</small>
+            <p class="mb-0 text-truncate" title="${data.capital}">${
+      data.capital
+    }</p>
+          </div>
+        </div>
+        <div class="info-item-icon">
+          <div class="icon-wrapper bg-success-subtle text-success">
+            <i class="fas fa-users fa-sm"></i>
+          </div>
+          <div class="info-text">
+            <small data-translate="Populacao">População</small>
+            <p class="mb-0">${data.population}</p>
+          </div>
+        </div>
+        <div class="info-item-icon">
+          <div class="icon-wrapper bg-info-subtle text-info">
+            <i class="fas fa-language fa-sm"></i>
+          </div>
+          <div class="info-text">
+            <small data-translate="Idioma">Idioma</small>
+            <p class="mb-0 text-truncate" title="${data.language}">${
+      data.language
+    }</p>
+          </div>
+        </div>
+        <div class="info-item-icon">
+          <div class="icon-wrapper bg-warning-subtle text-warning">
+            <i class="fas fa-money-bill-wave fa-sm"></i>
+          </div>
+          <div class="info-text">
+            <small data-translate="Moeda">Moeda</small>
+            <p class="mb-0 text-truncate" title="${data.currency}">${
+      data.currency
+    }</p>
+          </div>
+        </div>
+      </div>
+      <a href="country.html?code=${
+        data.cca3
+      }" class="btn btn-primary mt-auto w-100 btn-sm">
+        <i class="fas fa-map-marker-alt me-1"></i><span data-translate="Explorar">Explorar</span>
+      </a>
+    </div>
+  </div>
+</div>`;
   },
 };
 
@@ -373,10 +634,8 @@ const templates = {
 // ===========================
 
 const extractCountryData = (country) => ({
-  name:
-    country.translations?.por?.common ||
-    country.name?.common ||
-    "País desconhecido",
+  name: getDisplayName(country, headerButtons?.currentLanguage || "en"),
+  cca3: country.cca3,
   population: country.population
     ? utils.formatNumber(country.population)
     : "N/A",
@@ -409,7 +668,7 @@ const countries = {
       const data = await api.countries.getAll();
 
       if (!data?.length) {
-        throw new Error("Dados de países não recebidos");
+        throw new Error("Sem_dados_recebidos");
       }
 
       utils.sortByName(data, state.collator);
@@ -419,7 +678,9 @@ const countries = {
       console.log(`Carregados ${data.length} países`);
     } catch (error) {
       console.error("Erro ao buscar países:", error);
-      countriesGrid.innerHTML = templates.error.general();
+      countriesGrid.innerHTML = templates.error.general(
+        "Erro_ao_carregar_paises"
+      );
     } finally {
       dom.setLoading(countriesGrid, false);
     }
@@ -453,12 +714,13 @@ const countries = {
   display(countriesList) {
     const { countriesGrid } = dom.elements;
     if (!countriesGrid) return;
+
     if (!countriesList?.length) {
       countriesGrid.innerHTML = templates.error.noResults();
-      // Traduzir a mensagem de "nenhum país encontrado"
-      headerButtons.translateElement(countriesGrid);
+      headerButtons.translateElement(countriesGrid); // JÁ EXISTE - OK
       return;
     }
+
     const html = countriesList
       .map((country) => {
         try {
@@ -470,11 +732,29 @@ const countries = {
       })
       .filter(Boolean)
       .join("");
-    countriesGrid.innerHTML =
-      html || templates.error.general("Erro ao carregar os países");
 
-    // --- NOVO: Traduzir os cards recém-criados ---
+    countriesGrid.innerHTML =
+      html || templates.error.general("Erro_ao_carregar_paises");
+
     headerButtons.translateElement(countriesGrid);
+  },
+
+  buildSearchIndex(country) {
+    const parts = [];
+    if (country.name?.common) parts.push(country.name.common);
+    if (country.name?.official) parts.push(country.name.official);
+    if (country.cca3) parts.push(country.cca3);
+    if (country.altSpellings) parts.push(...country.altSpellings);
+    if (country.translations) {
+      Object.values(country.translations).forEach((t) => {
+        if (t?.common) parts.push(t.common);
+        if (t?.official) parts.push(t.official);
+      });
+    }
+    Object.values(country.name?.nativeName || {}).forEach(
+      (n) => n.common && parts.push(n.common)
+    );
+    return parts.join(" ").toLowerCase();
   },
 
   async search(searchTerm = null) {
@@ -493,11 +773,10 @@ const countries = {
       return;
     }
 
-    const filtered = state.allCountriesData.filter(
-      (country) =>
-        country.name.common.toLowerCase().includes(term) ||
-        country.translations?.por?.common?.toLowerCase().includes(term)
-    );
+    const filtered = state.allCountriesData.filter((country) => {
+      const idx = countries.buildSearchIndex(country);
+      return idx.includes(term);
+    });
 
     dom.updateTitle(
       dom.elements.countriesTitle,
@@ -515,15 +794,21 @@ const countries = {
 const countryDetails = {
   async display() {
     const container = dom.elements.detailsContainer;
+    const code = utils.getUrlParam("code");
     const countryName = utils.getUrlParam("name");
 
-    if (!countryName || !container) return;
+    if ((!code && !countryName) || !container) return;
 
     container.innerHTML = templates.loading.hero();
 
     try {
-      const countryData = await api.countries.getByName(countryName);
-      if (!countryData) throw new Error("País não encontrado");
+      let countryData;
+      if (code) {
+        countryData = await api.countries.getByCode(code);
+      } else {
+        countryData = await api.countries.getByName(countryName);
+      }
+      if (!countryData) throw new Error("Pais_nao_encontrado");
 
       const [weatherData, imageUrl] = await Promise.all([
         countryData.latlng?.length === 2
@@ -531,7 +816,12 @@ const countryDetails = {
               .get(countryData.latlng[0], countryData.latlng[1])
               .catch(() => null)
           : null,
-        api.unsplash.getImage(countryName),
+        api.unsplash.getImage(
+          getDisplayName(countryData, headerButtons?.currentLanguage || "en") ||
+            countryData.name?.common ||
+            countryData.cca3 ||
+            "country"
+        ),
       ]);
 
       container.innerHTML = countryDetails.buildHTML(
@@ -539,11 +829,17 @@ const countryDetails = {
         weatherData,
         imageUrl
       );
+
+      // GARANTIR que esta linha existe:
       headerButtons.translateElement(container);
       countryDetails.addInteractions();
     } catch (error) {
       console.error("Erro ao carregar detalhes:", error);
-      container.innerHTML = templates.error.general(`Erro: ${error.message}`);
+      container.innerHTML = templates.error.general(
+        "Erro_ao_carregar_detalhes"
+      );
+      // ADICIONAR tradução também para casos de erro:
+      headerButtons.translateElement(container);
     }
   },
 
@@ -561,9 +857,10 @@ const countryDetails = {
 
   extractData(countryData, weatherData) {
     return {
-      name: countryData.translations?.por?.common || countryData.name.common,
+      name: getDisplayName(countryData, headerButtons?.currentLanguage || "en"),
       official:
-        countryData.translations?.por?.official || countryData.name.official,
+        countryData.name?.official ||
+        getDisplayName(countryData, headerButtons?.currentLanguage || "en"),
       population: countryData.population
         ? utils.formatNumber(countryData.population)
         : "N/A",
@@ -583,8 +880,12 @@ const countryDetails = {
       independent:
         countryData.independent !== undefined
           ? countryData.independent
-            ? "Sim"
-            : "Não"
+            ? headerButtons.translations[headerButtons.currentLanguage]?.[
+                "Sim"
+              ] || "Sim"
+            : headerButtons.translations[headerButtons.currentLanguage]?.[
+                "Nao"
+              ] || "Não"
           : "N/A",
       weather: weatherData
         ? `${Math.round(weatherData.main.temp)}°C, ${
@@ -625,7 +926,10 @@ const countryDetails = {
         </div>
         <div class="col-md-4 text-center">
           <img src="${countryData.flags.svg || countryData.flags.png}"
-               alt="Bandeira de ${data.name}"
+               alt="Bandeira de ${getDisplayName(
+                 countryData,
+                 headerButtons?.currentLanguage || "en"
+               )}"
                class="img-fluid rounded-4 shadow-sm"
                style="max-height: 180px; object-fit: contain;">
         </div>
@@ -640,7 +944,6 @@ const countryDetails = {
         ${countryDetails.buildBordersCard(data, countryData)}
       </div>`;
   },
-
   buildInfoCard(data) {
     const items = [
       { icon: "fa-globe", labelKey: "Continente", value: data.continent },
@@ -657,27 +960,34 @@ const countryDetails = {
         value: data.independent,
       },
     ];
+
     return `
-    <div class="col-lg-4 col-md-6">
-      <div class="card h-100 shadow-sm border-0 rounded-4 transition-card">
-        <div class="card-header bg-primary text-white py-3">
-          <h5 class="mb-0"><i class="fas fa-info-circle me-2"></i><span data-translate="Informacoes_Essenciais">Informações Essenciais</span></h5>
-        </div>
-        <div class="card-body">
-          <ul class="list-unstyled">
-            ${items
-              .map(
-                (item) => `
-              <li class="mb-3">
-                <strong><i class="fas ${item.icon} me-2 text-muted"></i><span data-translate="${item.labelKey}">${item.labelKey}</span>:</strong> ${item.value}
-              </li>
-            `
-              )
-              .join("")}
-          </ul>
-        </div>
+  <div class="col-lg-4 col-md-6">
+    <div class="card h-100 shadow-sm border-0 rounded-4 transition-card">
+      <div class="card-header bg-primary text-white py-3">
+        <h5 class="mb-0"><i class="fas fa-info-circle me-2"></i><span data-translate="Informacoes_Essenciais">Informações Essenciais</span></h5>
       </div>
-    </div>`;
+      <div class="card-body">
+        <ul class="list-unstyled">
+          ${items
+            .map(
+              (item) => `
+            <li class="mb-3">
+              <strong><i class="fas ${
+                item.icon
+              } me-2 text-muted"></i><span data-translate="${
+                item.labelKey
+              }">${item.labelKey.replace("_", " ")}</span>:</strong> ${
+                item.value
+              }
+            </li>
+          `
+            )
+            .join("")}
+        </ul>
+      </div>
+    </div>
+  </div>`;
   },
 
   buildWeatherCard(weatherData) {
@@ -687,9 +997,10 @@ const countryDetails = {
       <div class="display-5 fw-bold text-warning">${Math.round(
         weatherData.main.temp
       )}°C</div>
-      <p class="text-muted text-capitalize mb-1">${
-        weatherData.weather[0].description
-      }</p>
+      <p class="text-muted text-capitalize mb-1">${translateWeatherDescription(
+        weatherData.weather[0].description,
+        headerButtons?.currentLanguage || "en"
+      )}</p>
       <img src="https://openweathermap.org/img/wn/${
         weatherData.weather[0].icon
       }@2x.png"
@@ -766,13 +1077,18 @@ const countryDetails = {
       <div class="row mb-5">
         <div class="col-12">
           <div class="card border-0 rounded-4 overflow-hidden position-relative shadow-lg">
-            <img src="${imageUrl}"
-                 alt="Paisagem de ${data.name}"
+            <img src="${api.ensureAbsoluteUrl(imageUrl)}"
+                 alt="Paisagem de ${getDisplayName(
+                   countryData,
+                   headerButtons?.currentLanguage || "en"
+                 )}"
                  class="img-fluid w-100" style="height: 500px; object-fit: cover;">
             <div class="card-img-overlay d-flex flex-column justify-content-end p-4">
               <div class="bg-dark bg-opacity-75 p-4 rounded-4">
                 <h3 class="text-white mb-2">${data.name}</h3>
-                <p class="text-white mb-0">${data.capital} • ${data.region} • ${data.continent}</p>
+                <p class="text-white mb-0">${data.capital} • ${data.region} • ${
+      data.continent
+    }</p>
               </div>
             </div>
           </div>
@@ -784,25 +1100,25 @@ const countryDetails = {
     const stats = [
       {
         icon: "fa-users",
-        title: "População",
+        titleKey: "Populacao",
         value: data.population,
         color: "primary",
       },
       {
         icon: "fa-ruler-combined",
-        title: "Área",
+        titleKey: "Area",
         value: data.area,
         color: "success",
       },
       {
         icon: "fa-language",
-        title: "Idioma",
+        titleKey: "Idioma",
         value: data.language,
         color: "info",
       },
       {
         icon: "fa-money-bill-wave",
-        title: "Moeda",
+        titleKey: "Moeda",
         value: data.currency,
         color: "warning",
       },
@@ -817,7 +1133,7 @@ const countryDetails = {
             <div class="card text-center shadow-sm border-0 rounded-4 h-100 transition-card">
               <div class="card-body d-flex flex-column justify-content-center">
                 <i class="fas ${stat.icon} fa-2x text-${stat.color} mb-3"></i>
-                <h5 class="card-title">${stat.title}</h5>
+                <h5 class="card-title" data-translate="${stat.titleKey}">${stat.titleKey}</h5>
                 <p class="card-text fw-bold">${stat.value}</p>
               </div>
             </div>
@@ -870,7 +1186,17 @@ const featured = {
                   .get(country.latlng[0], country.latlng[1])
                   .catch(() => null)
               : null,
-            api.unsplash.getImage(country.name.common).catch(() => null),
+            api.unsplash
+              .getImage(
+                getDisplayName(
+                  country,
+                  headerButtons?.currentLanguage || "en"
+                ) ||
+                  country.name?.common ||
+                  country.cca3 ||
+                  "country"
+              )
+              .catch(() => null),
           ]);
           return { ...country, weather, image };
         })
@@ -907,7 +1233,10 @@ const featured = {
             <div class="hero-image-container">
               ${
                 data.image
-                  ? `<img src="${data.image}" alt="Paisagem de ${data.name}" class="hero-background-image" loading="lazy">`
+                  ? `<img src="${data.image}" alt="Paisagem de ${getDisplayName(
+                      country,
+                      headerButtons.currentLanguage
+                    )}" class="hero-background-image" loading="lazy">`
                   : ""
               }
               <div class="hero-gradient-overlay" style="background: ${gradient}"></div>
@@ -930,9 +1259,10 @@ const featured = {
                   <div class="weather-temp">${Math.round(
                     data.weather.main.temp
                   )}°</div>
-                  <div class="weather-desc">${
-                    data.weather.weather[0].description
-                  }</div>
+                  <div class="weather-desc">${translateWeatherDescription(
+                    data.weather.weather[0].description,
+                    headerButtons?.currentLanguage || "en"
+                  )}</div>
                   <div class="weather-icon">
                     <img src="https://openweathermap.org/img/wn/${
                       data.weather.weather[0].icon
@@ -950,9 +1280,9 @@ const featured = {
   ${featured.buildStatItem("fa-comments", "Idioma", data.language)}
   ${featured.buildStatItem("fa-coins", "Moeda", data.currency)}
 </div>
-            <a href="country.html?name=${encodeURIComponent(
-              data.name
-            )}" class="premium-explore-btn">
+            <a href="country.html?code=${
+              country.cca3
+            }" class="premium-explore-btn">
               <span class="btn-text"><i class="fas fa-rocket me-2"></i>Explorar ${
                 data.name
               }</span>
@@ -964,7 +1294,7 @@ const featured = {
   },
 
   extractData: (country) => ({
-    name: country.translations?.por?.common || country.name.common,
+    name: getDisplayName(country, headerButtons.currentLanguage || "en"),
     capital: country.capital?.[0] || "N/A",
     population: utils.formatNumber(country.population),
     language: utils.safeExtract(country.languages, "language"),
@@ -1119,8 +1449,21 @@ pageManager.init();
 // ===========================
 
 const headerButtons = {
+  currentLanguage: "pt-br",
+
   translations: {
     "pt-br": {
+      // Novas traduções adicionadas
+      Erro_ao_carregar_paises: "Erro ao carregar os países.",
+      Informacoes_Essenciais: "Informações Essenciais",
+      Erro_ao_carregar_detalhes: "Erro ao carregar detalhes do país.",
+      Pais_nao_encontrado: "País não encontrado",
+      Sem_dados_recebidos: "Sem dados recebidos",
+      Nenhum_pais_encontrado_para:
+        'Nenhum país encontrado para "${searchTerm}"',
+      Paises_encontrados_para:
+        '${count} países encontrados para "${searchTerm}"',
+      Pais_encontrado_para: '${count} país encontrado para "${searchTerm}"',
       Titulo_Site: "NoMap",
       Nome_Site: "NoMap",
       Placeholder_Pesquisar: "Pesquisar...",
@@ -1170,6 +1513,8 @@ const headerButtons = {
       Experiencia_Autentica: "Experiência Autêntica",
       Dicas_baseadas_em_experiencias_reais:
         "Dicas baseadas em experiências reais",
+      Erro_ao_carregar_paises: "Erro ao carregar os países.",
+      Informacoes_Essenciais: "Informações Essenciais",
       Inovacao_Constante: "Inovação Constante",
       Sempre_buscando_melhorias: "Sempre buscando melhorias para você",
       Pronto_para_Comecar_sua_Proxima_Aventura:
@@ -1379,6 +1724,15 @@ const headerButtons = {
       Explorar: "Explorar",
     },
     en: {
+      // Novas traduções adicionadas
+      Informacoes_Essenciais: "Essential Information",
+      Erro_ao_carregar_paises: "Error loading countries.",
+      Erro_ao_carregar_detalhes: "Error loading country details.",
+      Pais_nao_encontrado: "Country not found",
+      Sem_dados_recebidos: "No data received",
+      Nenhum_pais_encontrado_para: 'No countries found for "${searchTerm}"',
+      Paises_encontrados_para: '${count} countries found for "${searchTerm}"',
+      Pais_encontrado_para: '${count} country found for "${searchTerm}"',
       // --- TRADUÇÕES PARA INDEX.HTML (EN) ---
       Titulo_Site: "NoMap",
       Nome_Site: "NoMap",
@@ -1584,6 +1938,17 @@ const headerButtons = {
       Explorar: "Explore",
     },
     es: {
+      // Novas traduções adicionadas
+      Informacoes_Essenciais: "Información Esencial",
+      Erro_ao_carregar_paises: "Error al cargar los países.",
+      Erro_ao_carregar_detalhes: "Error al cargar los detalles del país.",
+      Pais_nao_encontrado: "País no encontrado",
+      Sem_dados_recebidos: "No se recibieron datos",
+      Nenhum_pais_encontrado_para:
+        'No se encontraron países para "${searchTerm}"',
+      Paises_encontrados_para:
+        '${count} países encontrados para "${searchTerm}"',
+      Pais_encontrado_para: '${count} país encontrado para "${searchTerm}"',
       // --- TRADUÇÕES PARA INDEX.HTML (ES) ---
       Titulo_Site: "NoMap",
       Nome_Site: "NoMap",
@@ -1795,10 +2160,12 @@ const headerButtons = {
     },
   },
 
-  currentLanguage: "pt-br",
+  currentLanguage: "en",
 
   init() {
     console.log("Inicializando header buttons...");
+    // perto do init:
+    headerButtons.currentLanguage = headerButtons.currentLanguage || "en";
     headerButtons.loadSavedSettings();
     headerButtons.addEventListeners();
   },

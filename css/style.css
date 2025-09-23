@@ -2159,3 +2159,7 @@ body.dark-theme .info-item small {
 body.dark-theme .info-item p {
   color: var(--text-primary) !important;
 }
+
+body.dark-theme h4 {
+  color: var(--bg-primary) !important;
+}
