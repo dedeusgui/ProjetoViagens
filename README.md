@@ -200,4 +200,4 @@ nomap/
   <p><strong>NoMap - Descubra o mundo sem fronteiras 🌍</strong></p>
   <p>Desenvolvido com ❤️ pela equipe NoMap</p>
 
-</div>
+</div> 
