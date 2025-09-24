@@ -4,7 +4,7 @@
 
 [![Licença](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![Status do Projeto](https://img.shields.io/badge/status-ativo-green.svg)]()
-[![Versão](https://img.shields.io/badge/versão-1.0.5-brightgreen.svg)]()
+[![Versão](https://img.shields.io/badge/versão-2.0.0-brightgreen.svg)]()
 
 ## 📖 Sobre o Projeto
 
