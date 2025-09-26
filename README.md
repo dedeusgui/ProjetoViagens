@@ -65,41 +65,6 @@ Com foco na usabilidade e na qualidade dos dados apresentados, a plataforma se d
 - **[OpenWeatherMap](https://openweathermap.org/api)** - Informações climáticas
 - **[Unsplash API](https://unsplash.com/developers)** - Imagens de alta qualidade
 
-## 🚀 Como Executar
-
-### 1. Clone o repositório
-
-```bash
-git clone https://github.com/seu-usuario/nomap.git
-cd nomap
-```
-
-### 2. Configure as chaves de API
-
-Edite o arquivo `js/app.js`:
-
-```javascript
-const weatherKey = "SUA_CHAVE_OPENWEATHERMAP";
-const unplashKey = "SUA_CHAVE_UNSPLASH";
-```
-
-### 3. Execute um servidor local
-
-```bash
-# Com Python 3
-python -m http.server 8000
-
-# Com Node.js
-npx http-server -p 8000
-
-# Com PHP
-php -S localhost:8000
-```
-
-### 4. Acesse a aplicação
-
-Abra seu navegador em `http://localhost:8000`
-
 ## 📁 Estrutura do Projeto
 
 ```
@@ -120,32 +85,7 @@ nomap/
 └── 📋 README.md           # Este arquivo
 ```
 
-## 🔧 Configuração das APIs
 
-### OpenWeatherMap
-
-1. Acesse [openweathermap.org/api](https://openweathermap.org/api)
-2. Crie uma conta gratuita
-3. Obtenha sua API key
-4. Configure no arquivo `js/app.js`
-
-### Unsplash
-
-1. Acesse [unsplash.com/developers](https://unsplash.com/developers)
-2. Registre uma nova aplicação
-3. Copie o Access Key
-4. Configure no arquivo `js/app.js`
-
-## 🎯 Páginas da Aplicação
-
-| Página | Descrição |
-|--------|-----------|
-| **Home** | Página inicial com navegação e apresentação |
-| **Explorar** | Grid completo de todos os países com filtros |
-| **Destaques** | Países selecionados com informações detalhadas |
-| **Detalhes** | Página individual com dados completos do país |
-| **Sobre** | Apresentação da equipe e filosofia do projeto |
-| **Missão** | Objetivos e valores fundamentais |
 
 ## 🤝 Como Contribuir
 
@@ -196,8 +136,29 @@ nomap/
 
 ---
 
+## 📄 Documentação
+
+Este README.md serve como a documentação principal do projeto NoMap, abordando os seguintes tópicos:
+
+- **Escopo do Projeto**: Detalhes sobre o que o NoMap se propõe a fazer e seus objetivos.
+- **Justificativa**: Razões e problemas que o NoMap busca resolver.
+- **Tecnologias Utilizadas**: Lista das principais ferramentas e linguagens empregadas no desenvolvimento.
+- **Funcionalidades**: Descrição das principais características da aplicação.
+- **Estrutura do Projeto**: Visão geral da organização dos arquivos e diretórios.
+- **Como Contribuir**: Orientações para desenvolvedores interessados em colaborar.
+- **Equipe**: Apresentação dos membros da equipe de desenvolvimento.
+- **Reconhecimentos**: Agradecimentos às APIs e frameworks utilizados.
+
+
+
+
+## 🚀 Deploy
+
+Acesse a aplicação online aqui: [NoMap no Vercel](https://nomap.vercel.app/)
+
+---
+
 <div align="center">
   <p><strong>NoMap - Descubra o mundo sem fronteiras 🌍</strong></p>
   <p>Desenvolvido com ❤️ pela equipe NoMap</p>
-
-</div>             
+</div>   
