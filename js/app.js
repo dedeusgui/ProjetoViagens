@@ -28,6 +28,24 @@ const CONFIG = {
 };
 
 // ===========================
+// Cache da API
+// ===========================
+
+const apiCache = {};
+const CACHE_TIME = 5 * 60 * 1000; // 5 minutos
+
+const cachedFetch = async (url) => {
+  const now = Date.now();
+  if (apiCache[url] && now - apiCache[url].timestamp < CACHE_TIME) {
+    return apiCache[url].data;
+  }
+
+  const data = await api.fetch(url);
+  apiCache[url] = { data, timestamp: now };
+  return data;
+};
+
+// ===========================
 // Estado Global
 // ===========================
 
@@ -251,7 +269,7 @@ const api = {
 
   countries: {
     getAll: () =>
-      api.fetch(
+      cachedFetch(
         `${CONFIG.api.restCountries.baseUrl}/all?fields=name,flags,capital,population,continents,languages,currencies,translations,cca3,altSpellings`
       ),
 
@@ -260,7 +278,7 @@ const api = {
       const fields =
         "name,capital,population,languages,currencies,latlng,timezones,flags,borders,region,subregion,continents,translations,cca3,idd,tld,area,altSpellings";
       try {
-        return await api.fetch(
+        return await cachedFetch(
           `${CONFIG.api.restCountries.baseUrl}/alpha/${encodeURIComponent(
             code
           )}?fields=${fields}`
@@ -276,7 +294,7 @@ const api = {
       // que os links dos cards e os nomes traduzidos funcionem corretamente.
       const fields =
         "name,flags,capital,population,continents,languages,currencies,cca3,translations";
-      return api.fetch(
+      return cachedFetch(
         `${CONFIG.api.restCountries.baseUrl}/region/${encodeURIComponent(
           region
         )}?fields=${fields}`
@@ -290,7 +308,7 @@ const api = {
 
       const tryFetch = async (url) => {
         try {
-          const data = await api.fetch(url);
+          const data = await cachedFetch(url);
           return data?.length ? data[0] : null;
         } catch (e) {
           if (e.message?.includes("404")) return null;
@@ -928,6 +946,7 @@ const countryDetails = {
         </div>
         <div class="col-md-4 text-center">
           <img src="${countryData.flags.svg || countryData.flags.png}"
+               loading="lazy"
                alt="Bandeira de ${getDisplayName(
                  countryData,
                  headerButtons?.currentLanguage || "en"
@@ -1006,6 +1025,7 @@ const countryDetails = {
       <img src="https://openweathermap.org/img/wn/${
         weatherData.weather[0].icon
       }@2x.png"
+           loading="lazy"
            alt="Ícone do clima" class="img-fluid" style="max-height: 80px;">
     </div>
     <div class="row text-center g-3">
