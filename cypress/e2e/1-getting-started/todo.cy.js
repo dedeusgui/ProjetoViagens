@@ -79,3 +79,56 @@ describe('Botões de Ação da Página Inicial', () => {
   });
 });
 
+// 3. TESTES DE BOTÕES DA PÁGINA INICIAL (HERO E CARDS)
+describe('Botões de Ação da Página Inicial', () => {
+  beforeEach(() => {
+    cy.visit('/');
+  });
+
+  it('Botão "Explorar Países" do hero deve ir para places.html', () => {
+    cy.contains('Explorar Países').first().click();
+    cy.url().should('include', 'places.html');
+  });
+
+  it('Botão "Ver Destaques" do hero deve ir para intro.html', () => {
+    cy.contains('Ver Destaques').click();
+    cy.url().should('include', 'intro.html');
+  });
+
+  it('Card "Países em Destaque" deve ter link funcional', () => {
+    cy.contains('Países em Destaque').parents('.card').find('a').click();
+    cy.url().should('include', 'intro.html');
+  });
+
+  it('Card "Todos os Países" deve ter link funcional', () => {
+    cy.contains('Todos os Países').parents('.card').find('a').first().click();
+    cy.url().should('include', 'places.html');
+  });
+});
+
+// 4. TESTE DE BUSCA GLOBAL
+describe('Funcionalidade de Busca', () => {
+  it('Busca por país deve funcionar no header', () => {
+    cy.visit('/');
+    cy.get('#global-search-input').type('Brazil');
+    cy.get('#search-button').click();
+    cy.url().should('include', 'places.html');
+    cy.url().should('include', 'search=');
+  });
+
+  it('Busca com Enter deve funcionar', () => {
+    cy.visit('/');
+    cy.get('#global-search-input').type('Japan{enter}');
+    cy.url().should('include', 'places.html');
+  });
+
+  it('Busca na página de países deve filtrar resultados', () => {
+    cy.visit('/places.html');
+    cy.wait(2000); // Aguarda carregar países
+    cy.get('#search-country-input').type('Braz');
+    cy.wait(500);
+    // Verifica se há cards visíveis após filtro
+    cy.get('.country-card').should('exist');
+  });
+});
+
