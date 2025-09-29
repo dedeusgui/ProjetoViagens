@@ -371,3 +371,43 @@ describe('Responsividade', () => {
     });
   });
 });
+
+// 14. TESTE DE ACESSIBILIDADE BÁSICA
+describe('Acessibilidade', () => {
+  it('Links devem ter texto descritivo', () => {
+    cy.visit('/');
+    cy.get('a').each(($link) => {
+      cy.wrap($link).should('have.attr', 'href');
+      // Links com imagens devem ter alt text
+      if ($link.find('img').length > 0) {
+        cy.wrap($link).find('img').should('have.attr', 'alt');
+      }
+    });
+  });
+
+  it('Imagens devem ter atributo alt', () => {
+    cy.visit('/');
+    cy.get('img').each(($img) => {
+      cy.wrap($img).should('have.attr', 'alt');
+    });
+  });
+});
+
+// 15. TESTE DE PAÍSES EM DESTAQUE
+describe('Página de Países em Destaque', () => {
+  it('Deve carregar países em destaque', () => {
+    cy.visit('/intro.html');
+    cy.wait(4000);
+    cy.get('.featured-country-premium-card').should('exist');
+    cy.get('.featured-country-premium-card').should('have.length.greaterThan', 0);
+  });
+
+  it('Cards de destaque devem ter informações visíveis', () => {
+    cy.visit('/intro.html');
+    cy.wait(4000);
+    cy.get('.featured-country-premium-card').first().within(() => {
+      cy.get('.country-name-hero').should('be.visible');
+      cy.get('.premium-explore-btn').should('be.visible');
+    });
+  });
+});
