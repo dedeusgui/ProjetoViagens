@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="NoMap - Seu guia completo para explorar destinos incríveis sem fronteiras"
+    />
+    <meta
+      name="keywords"
+      content="viagem, países, turismo, destinos, guia de viagem"
+    />
+    <meta property="og:title" content="NoMap - Descubra o Mundo" />
+    <meta
+      property="og:description"
+      content="Explore países e culturas de forma simples e inspiradora"
+    />
+    <title data-translate="Titulo_Quem_Somos">NoMap - Quem Somos</title>
+
+    <link
+      rel="preload"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      as="style"
+    />
+    <link rel="preload" href="css/style.css" as="style" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+      crossorigin="anonymous"
+    />
+    <link rel="stylesheet" href="css/style.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    />
+    <link rel="icon" type="image/png" href="assets/logo.png" />
+  </head>
+  <body>
+    <!-- Aplicar tema escuro imediatamente para evitar piscar -->
+    <script>
+      (function () {
+        try {
+          const isDarkMode = localStorage.getItem("nomap-dark-mode") === "true";
+          if (isDarkMode) {
+            document.body.classList.add("dark-theme");
+          }
+        } catch (e) {
+          console.warn("Erro ao aplicar tema no carregamento:", e);
+        }
+      })();
+    </script>
+    <header class="shadow-sm">
+      <nav class="navbar navbar-expand-lg navbar-light container">
+        <a class="navbar-brand d-flex align-items-center" href="index.html">
+          <img
+            src="assets/logo.png"
+            alt="Logo NoMap"
+            height="40"
+            class="me-2"
+          />
+        </a>
+
+        <div class="d-flex position-absolute top-50 start-50 translate-middle">
+          <a class="navbar-brand d-flex align-items-center" href="index.html">
+            <span class="fs-4 fw-bold text-dark" data-translate="Nome_Site"
+              >NoMap</span
+            >
+          </a>
+        </div>
+
+        <div class="d-flex ms-auto align-items-center gap-2">
+          <input
+            class="form-control me-2"
+            type="search"
+            placeholder="Pesquisar..."
+            aria-label="Pesquisar"
+            id="global-search-input"
+            data-translate-placeholder="Placeholder_Pesquisar"
+          />
+          <button class="btn btn-primary" type="button" id="search-button">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="16"
+              height="16"
+              fill="currentColor"
+              class="bi bi-search"
+              viewBox="0 0 16 16"
+            >
+              <path
+                d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0"
+              />
+            </svg>
+          </button>
+
+          <!-- Dropdown de Navegação -->
+          <div class="dropdown">
+            <button
+              class="header-btn dropdown-toggle"
+              type="button"
+              id="navigationDropdown"
+              data-bs-toggle="dropdown"
+              aria-expanded="false"
+              title="Navegação"
+            >
+              <i class="fas fa-compass"></i>
+            </button>
+            <ul
+              class="dropdown-menu dropdown-menu-end"
+              aria-labelledby="navigationDropdown"
+            >
+              <li>
+                <a class="dropdown-item" href="index.html"
+                  ><i class="fas fa-home"></i
+                  ><span data-translate="Pagina_Inicial"
+                    >Página Inicial</span
+                  ></a
+                >
+              </li>
+              <li>
+                <a class="dropdown-item" href="intro.html"
+                  ><i class="fas fa-star"></i
+                  ><span data-translate="Paises_em_Destaque_Nav"
+                    >Países em Destaque</span
+                  ></a
+                >
+              </li>
+              <li>
+                <a class="dropdown-item" href="places.html"
+                  ><i class="fas fa-globe-americas"></i
+                  ><span data-translate="Todos_os_Paises_Nav"
+                    >Todos os Países</span
+                  ></a
+                >
+              </li>
+              <li><hr class="dropdown-divider" /></li>
+              <li>
+                <a class="dropdown-item" href="about.html"
+                  ><i class="fas fa-users"></i
+                  ><span data-translate="Quem_Somos_Nav">Quem Somos</span></a
+                >
+              </li>
+              <li>
+                <a class="dropdown-item" href="mission.html"
+                  ><i class="fas fa-bullseye"></i
+                  ><span data-translate="Nossa_Missao_Nav"
+                    >Nossa Missão</span
+                  ></a
+                >
+              </li>
+            </ul>
+          </div>
+
+          <!-- Botão de Configurações -->
+          <button
+            class="header-btn"
+            type="button"
+            id="configButton"
+            data-bs-toggle="modal"
+            data-bs-target="#configModal"
+            title="Configurações"
+          >
+            <i class="fas fa-cog"></i>
+          </button>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container my-5">
+      <div class="text-center mb-5">
+        <h1 class="display-4 fw-bold mb-3" data-translate="Quem_Somos_Titulo">
+          Quem Somos
+        </h1>
+        <p
+          class="lead text-muted"
+          data-translate="A_equipe_apaixonada_por_viagens"
+        >
+          A equipe apaixonada por viagens e tecnologia que transforma
+          descobertas em experiências.
+        </p>
+      </div>
+
+      <section class="about-story mb-5 section-animate">
+        <div class="row g-5 align-items-center">
+          <div class="col-lg-6">
+            <div
+              class="story-image bg-light rounded-4 p-5 text-center shadow-sm"
+            >
+              <i class="fas fa-map-marked-alt fa-3x text-primary mb-3"></i>
+              <h4 data-translate="Nossa_Origem">Nossa Origem</h4>
+            </div>
+          </div>
+          <div class="col-lg-6">
+            <h2
+              class="fw-bold mb-4"
+              data-translate="Da_Frustracao_a_Inspiracao"
+            >
+              Da Frustração à Inspiração
+            </h2>
+            <p
+              class="text-muted mb-4"
+              data-translate="NoMap_nasceu_de_uma_necessidade_real"
+            >
+              O NoMap nasceu de uma necessidade real: a frustração de buscar
+              informações de viagem em dezenas de sites diferentes, sem
+              encontrar tudo em um só lugar. O que começou como um projeto
+              pessoal para resolver nosso próprio problema, rapidamente se
+              transformou em uma missão maior.
+            </p>
+            <p
+              class="text-muted mb-4"
+              data-translate="Somos_viajantes_desenvolvedores_e_designers"
+            >
+              Somos viajantes, desenvolvedores e designers que compartilham a
+              mesma crença:
+              <strong data-translate="descobrir_o_mundo_deve_ser_simples">
+                descobrir o mundo deve ser simples, inspirador e acessível para
+                todos</strong
+              >. Cada linha de código que escrevemos, cada design que criamos,
+              tem um único propósito: tornar sua próxima aventura mais fácil de
+              planejar e mais emocionante de viver.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section class="our-philosophy mb-5 section-animate">
+        <div class="text-center mb-5">
+          <h2 class="fw-bold mb-3" data-translate="Nossa_Filosofia">
+            Nossa Filosofia
+          </h2>
+          <p
+            class="text-muted"
+            data-translate="Principios_que_guam_cada_decisao"
+          >
+            Princípios que guiam cada decisão que tomamos
+          </p>
+        </div>
+
+        <div class="row g-4">
+          <div class="col-md-4">
+            <div
+              class="philosophy-card bg-light bg-opacity-50 rounded-4 p-4 h-100 border-0 card-hover-lift card-hover-border"
+            >
+              <div
+                class="icon-wrapper bg-primary bg-opacity-10 rounded-circle p-3 mb-3 d-inline-block"
+              >
+                <i class="fas fa-heart text-primary fa-2x"></i>
+              </div>
+              <h5 class="fw-bold mb-3" data-translate="Paixao_Autentica">
+                Paixão Autêntica
+              </h5>
+              <p
+                class="text-muted"
+                data-translate="Somos_verdadeiros_apaixonados_por_viagens"
+              >
+                Somos verdadeiros apaixonados por viagens. Cada recurso que
+                desenvolvemos nasce da nossa própria experiência como
+                exploradores do mundo.
+              </p>
+            </div>
+          </div>
+
+          <div class="col-md-4">
+            <div
+              class="philosophy-card bg-light bg-opacity-50 rounded-4 p-4 h-100 border-0 card-hover-lift card-hover-border"
+            >
+              <div
+                class="icon-wrapper bg-success bg-opacity-10 rounded-circle p-3 mb-3 d-inline-block"
+              >
+                <i class="fas fa-lightbulb text-success fa-2x"></i>
+              </div>
+              <h5 class="fw-bold mb-3" data-translate="Inovacao_Consciente">
+                Inovação Consciente
+              </h5>
+              <p
+                class="text-muted"
+                data-translate="Acreditamos_que_tecnologia_deve_simplificar"
+              >
+                Acreditamos que tecnologia deve simplificar, não complicar. Cada
+                inovação é pensada para agregar valor real à sua experiência de
+                viagem.
+              </p>
+            </div>
+          </div>
+
+          <div class="col-md-4">
+            <div
+              class="philosophy-card bg-light bg-opacity-50 rounded-4 p-4 h-100 border-0 card-hover-lift card-hover-border"
+            >
+              <div
+                class="icon-wrapper bg-info bg-opacity-10 rounded-circle p-3 mb-3 d-inline-block"
+              >
+                <i class="fas fa-globe-americas text-info fa-2x"></i>
+              </div>
+              <h5 class="fw-bold mb-3" data-translate="Conexao_Global">
+                Conexão Global
+              </h5>
+              <p
+                class="text-muted"
+                data-translate="Queremos_conectar_pessoas_a_lugares"
+              >
+                Queremos conectar pessoas a lugares, culturas e experiências. O
+                mundo é grande demais para ser explorado sozinho.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+      <section class="team-section mb-5 section-animate">
+        <div class="text-center mb-5">
+          <h2 class="fw-bold mb-3" data-translate="Nossa_Equipe">
+            Nossa Equipe
+          </h2>
+          <p
+            class="text-muted"
+            data-translate="Profissionais_apaixonados_por_criar_experiencias"
+          >
+            Profissionais apaixonados por criar experiências extraordinárias
+          </p>
+        </div>
+
+        <div class="row g-4">
+          <!-- Bruno - Testador -->
+          <div class="col-lg-4 col-md-6">
+            <div
+              class="team-member-card bg-white rounded-4 shadow-sm border-0 h-100 card-hover-lift card-hover-border"
+            >
+              <div class="card-body text-center p-4">
+                <div
+                  class="team-avatar bg-primary bg-opacity-10 rounded-circle mx-auto mb-3"
+                  style="
+                    width: 80px;
+                    height: 80px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                  "
+                >
+                  <i class="fas fa-user text-primary fa-2x"></i>
+                </div>
+                <h5 class="fw-bold mb-1" data-translate="Bruno_Nome">Bruno</h5>
+                <p class="text-primary mb-2" data-translate="Bruno_Cargo">
+                  Testador
+                </p>
+                <p class="text-muted small" data-translate="Bruno_Descricao">
+                  Guardião da qualidade e experiência do usuário. Acredita que
+                  um produto excelente nasce da atenção aos detalhes.
+                </p>
+                <div class="social-links mt-3">
+                  <a
+                    href="https://github.com/BrunoSilvaCampos"
+                    class="text-primary me-2"
+                    ><i class="fab fa-github"></i
+                  ></a>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Guilherme - Dev Sr -->
+          <div class="col-lg-4 col-md-6">
+            <div
+              class="team-member-card bg-white rounded-4 shadow-sm border-0 h-100 card-hover-lift card-hover-border"
+            >
+              <div class="card-body text-center p-4">
+                <div
+                  class="team-avatar bg-success bg-opacity-10 rounded-circle mx-auto mb-3"
+                  style="
+                    width: 80px;
+                    height: 80px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                  "
+                >
+                  <i class="fas fa-laptop-code text-success fa-2x"></i>
+                </div>
+                <h5 class="fw-bold mb-1" data-translate="Guilherme_Nome">
+                  Guilherme
+                </h5>
+                <p class="text-success mb-2" data-translate="Guilherme_Cargo">
+                  Desenvolvedor Sênior
+                </p>
+                <p
+                  class="text-muted small"
+                  data-translate="Guilherme_Descricao"
+                >
+                  Arquiteto da solução e mentor da equipe. Transforma desafios
+                  complexos em código elegante e eficiente.
+                </p>
+                <div class="social-links mt-3">
+                  <a
+                    href="https://github.com/dedeusgui"
+                    class="text-success me-2"
+                    ><i class="fab fa-github"></i
+                  ></a>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Felipe - Dev Jr -->
+          <div class="col-lg-4 col-md-6">
+            <div
+              class="team-member-card bg-white rounded-4 shadow-sm border-0 h-100 card-hover-lift card-hover-border"
+            >
+              <div class="card-body text-center p-4">
+                <div
+                  class="team-avatar bg-warning bg-opacity-10 rounded-circle mx-auto mb-3"
+                  style="
+                    width: 80px;
+                    height: 80px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                  "
+                >
+                  <i class="fas fa-code text-warning fa-2x"></i>
+                </div>
+                <h5 class="fw-bold mb-1" data-translate="Felipe_Nome">
+                  Felipe
+                </h5>
+                <p class="text-warning mb-2" data-translate="Felipe_Cargo">
+                  Desenvolvedor Júnior
+                </p>
+                <p class="text-muted small" data-translate="Felipe_Descricao">
+                  Entusiasta da tecnologia e implementador de soluções. Acredita
+                  que cada linha de código contribui para uma experiência
+                  melhor.
+                </p>
+                <div class="social-links mt-3">
+                  <a
+                    href="https://github.com/Felpslzr09"
+                    class="text-warning me-2"
+                    ><i class="fab fa-github"></i
+                  ></a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section
+        class="cta-section bg-primary bg-opacity-10 rounded-4 p-5 text-center section-animate"
+      >
+        <h3 class="fw-bold mb-3" data-translate="Faca_Parte_da_Nossa_Historia">
+          Faça Parte da Nossa História
+        </h3>
+        <p
+          class="text-muted mb-4"
+          data-translate="Junte_se_a_milhares_de_viajantes"
+        >
+          Junte-se a milhares de viajantes que já descobriram o mundo com o
+          NoMap
+        </p>
+        <a href="places.html" class="btn btn-primary btn-lg px-5 py-3">
+          <i class="fas fa-compass me-2"></i
+          ><span data-translate="Comecar_a_Explorar">Começar a Explorar</span>
+        </a>
+      </section>
+    </main>
+
+    <footer class="bg-dark text-white text-center py-4 mt-5">
+      <div class="container">
+        <p class="m-0" data-translate="Direitos_Reservados">
+          &copy; 2025 NoMap. Todos os direitos reservados.
+        </p>
+        <div class="mt-2">
+          <a href="#" class="text-white text-decoration-none me-3"
+            ><i class="fab fa-instagram"></i
+          ></a>
+          <a href="#" class="text-white text-decoration-none me-3"
+            ><i class="fab fa-twitter"></i
+          ></a>
+          <a href="#" class="text-white text-decoration-none"
+            ><i class="fab fa-facebook"></i
+          ></a>
+        </div>
+      </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/app.js"></script>
+    <!-- Modal de Configurações -->
+    <div
+      class="modal fade"
+      id="configModal"
+      tabindex="-1"
+      aria-labelledby="configModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="configModalLabel">
+              <i class="fas fa-cog me-2"></i
+              ><span data-translate="Configuracoes_do_Site"
+                >Configurações do Site</span
+              >
+            </h5>
+            <button
+              type="button"
+              class="btn-close btn-close-white"
+              data-bs-dismiss="modal"
+              aria-label="Fechar"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <div class="config-option">
+              <div class="d-flex justify-content-between align-items-center">
+                <div>
+                  <h6 class="mb-1">
+                    <i class="fas fa-moon me-2 text-primary"></i
+                    ><span data-translate="Modo_Escuro">Modo Escuro</span>
+                  </h6>
+                  <small
+                    class="text-muted"
+                    data-translate="Ative_o_tema_escuro_para_uma_melhor_experiencia_noturna"
+                  >
+                    Ative o tema escuro para uma melhor experiência
+                    noturna</small
+                  >
+                </div>
+                <div class="form-check form-switch">
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    id="darkModeToggle"
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div class="config-option">
+              <div class="d-flex justify-content-between align-items-center">
+                <div>
+                  <h6 class="mb-1">
+                    <i class="fas fa-language me-2 text-success"></i
+                    ><span data-translate="Idioma">Idioma</span>
+                  </h6>
+                  <small
+                    class="text-muted"
+                    data-translate="Escolha_o_idioma_da_interface"
+                  >
+                    Escolha o idioma da interface</small
+                  >
+                </div>
+                <select
+                  class="form-select form-select-sm"
+                  style="width: auto"
+                  id="languageSelect"
+                >
+                  <option value="pt-br" selected>Português (BR)</option>
+                  <option value="en">English</option>
+                  <option value="es">Español</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="config-option">
+              <div class="d-flex justify-content-between align-items-center">
+                <div>
+                  <h6 class="mb-1">
+                    <i class="fas fa-eye me-2 text-info"></i
+                    ><span data-translate="Animacoes">Animações</span>
+                  </h6>
+                  <small
+                    class="text-muted"
+                    data-translate="Controle_as_animacoes_da_interface"
+                  >
+                    Controle as animações da interface</small
+                  >
+                </div>
+                <div class="form-check form-switch">
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    id="animationsToggle"
+                    checked
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div class="config-option">
+              <div class="d-flex justify-content-between align-items-center">
+                <div>
+                  <h6 class="mb-1">
+                    <i class="fas fa-bell me-2 text-warning"></i
+                    ><span data-translate="Notificacoes">Notificações</span>
+                  </h6>
+                  <small
+                    class="text-muted"
+                    data-translate="Receba_notificacoes_sobre_novos_destinos"
+                  >
+                    Receba notificações sobre novos destinos</small
+                  >
+                </div>
+                <div class="form-check form-switch">
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    id="notificationsToggle"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+              data-translate="Cancelar"
+            >
+              Cancelar
+            </button>
+            <button type="button" class="btn btn-primary" id="saveConfigBtn">
+              <i class="fas fa-save me-2"></i
+              ><span data-translate="Salvar_Configuracoes"
+                >Salvar Configurações</span
+              >
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

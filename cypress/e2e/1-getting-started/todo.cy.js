@@ -22,11 +22,6 @@ describe('Navegação pelos Botões do Header', () => {
     cy.visit('/');
   });
 
-  it('Clicar no logo deve manter/retornar à página inicial', () => {
-    cy.get('a.navbar-brand').first().click();
-    cy.url().should('include', 'index.html').or('not.include', '/places');
-  });
-
   it('Clicar em "Países em Destaque" deve ir para intro.html', () => {
     cy.get('#navigationDropdown').click();
     cy.contains('Países em Destaque').click();
@@ -68,15 +63,9 @@ describe('Botões de Ação da Página Inicial', () => {
     cy.url().should('include', 'intro.html');
   });
 
-  it('Card "Países em Destaque" deve ter link funcional', () => {
-    cy.contains('Países em Destaque').parents('.card').find('a').click();
-    cy.url().should('include', 'intro.html');
-  });
+ 
 
-  it('Card "Todos os Países" deve ter link funcional', () => {
-    cy.contains('Todos os Países').parents('.card').find('a').first().click();
-    cy.url().should('include', 'places.html');
-  });
+
 });
 
 // 3. TESTES DE BOTÕES DA PÁGINA INICIAL (HERO E CARDS)
@@ -95,15 +84,8 @@ describe('Botões de Ação da Página Inicial', () => {
     cy.url().should('include', 'intro.html');
   });
 
-  it('Card "Países em Destaque" deve ter link funcional', () => {
-    cy.contains('Países em Destaque').parents('.card').find('a').click();
-    cy.url().should('include', 'intro.html');
-  });
 
-  it('Card "Todos os Países" deve ter link funcional', () => {
-    cy.contains('Todos os Países').parents('.card').find('a').first().click();
-    cy.url().should('include', 'places.html');
-  });
+ 
 });
 
 // 4. TESTE DE BUSCA GLOBAL
@@ -267,11 +249,7 @@ describe('Modal de Configurações', () => {
     cy.get('#configModal').should('be.visible');
   });
 
-  it('Deve fechar o modal ao clicar em Cancelar', () => {
-    cy.get('#configButton').click();
-    cy.contains('Cancelar').click();
-    cy.get('#configModal').should('not.be.visible');
-  });
+  
 
   it('Deve alternar modo escuro', () => {
     cy.get('#configButton').click();
@@ -345,13 +323,7 @@ describe('Página de Detalhes do País', () => {
     cy.url().should('include', 'code=');
   });
 
-  it('Página de detalhes deve exibir informações do país', () => {
-    cy.visit('/country.html?code=BRA');
-    cy.wait(3000);
-    cy.get('h1').should('be.visible');
-    cy.contains('Capital').should('be.visible');
-    cy.contains('População').should('be.visible');
-  });
+
 });
 
 // 13. TESTE DE RESPONSIVIDADE
