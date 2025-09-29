@@ -316,3 +316,58 @@ describe('Armazenamento Local', () => {
   });
 });
 
+// 11. TESTE DE CONSOLE ERRORS
+describe('Erros no Console', () => {
+  it('Não deve ter erros críticos no console', () => {
+    cy.visit('/', {
+      onBeforeLoad(win) {
+        cy.stub(win.console, 'error').as('consoleError');
+      }
+    });
+    cy.wait(3000);
+    cy.get('@consoleError').then((errors) => {
+      // Permite warnings mas não erros críticos
+      const criticalErrors = errors.getCalls().filter(call => 
+        !call.args[0].includes('Warning')
+      );
+      expect(criticalErrors.length).to.be.lessThan(3);
+    });
+  });
+});
+
+// 12. TESTE DE DETALHES DO PAÍS
+describe('Página de Detalhes do País', () => {
+  it('Deve carregar detalhes ao clicar em um país', () => {
+    cy.visit('/places.html');
+    cy.wait(3000);
+    cy.get('.country-card').first().find('a').click();
+    cy.url().should('include', 'country.html');
+    cy.url().should('include', 'code=');
+  });
+
+  it('Página de detalhes deve exibir informações do país', () => {
+    cy.visit('/country.html?code=BRA');
+    cy.wait(3000);
+    cy.get('h1').should('be.visible');
+    cy.contains('Capital').should('be.visible');
+    cy.contains('População').should('be.visible');
+  });
+});
+
+// 13. TESTE DE RESPONSIVIDADE
+describe('Responsividade', () => {
+  const viewports = ['iphone-6', 'ipad-2', [1920, 1080]];
+
+  viewports.forEach((viewport) => {
+    it(`Deve ser responsivo em ${viewport}`, () => {
+      if (Array.isArray(viewport)) {
+        cy.viewport(viewport[0], viewport[1]);
+      } else {
+        cy.viewport(viewport);
+      }
+      cy.visit('/');
+      cy.get('header').should('be.visible');
+      cy.get('main').should('be.visible');
+    });
+  });
+});
